@@ -12,9 +12,9 @@ export class GoogleAiService {
 
   constructor() {
     this.textServiceClient = new TextServiceClient({
-      authClient: new GoogleAuth().fromAPIKey("AIzaSyA6N9hV4IMKHr7YUGSDjDW2Chw9sK0eDzo"),
+      authClient: new GoogleAuth().fromAPIKey(process.env.GOOGLE_API_KEY),
     });
-    this.generativeAI = new GoogleGenerativeAI("AIzaSyA6N9hV4IMKHr7YUGSDjDW2Chw9sK0eDzo");
+    this.generativeAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
   }
 
   async generateGeminiPro(prompt: string): Promise<string> {
