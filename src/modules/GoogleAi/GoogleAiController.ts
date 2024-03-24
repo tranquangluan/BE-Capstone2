@@ -46,6 +46,7 @@ export class GoogleAiController {
     ● Nắm rất vững lập trình hướng đối tượng, Design Pattern.
     
     ● Có kinh nghiệm về unit test và integration test.
+    ss
     
     ● Hiểu về lập trình đa luồng, non-blocking IO, xử lý bất đồng bộ,...
     
