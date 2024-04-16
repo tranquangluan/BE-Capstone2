@@ -1,7 +1,7 @@
 import { ApiBody, ApiProperty, ApiResponse } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
-export class GenerateTextDto {
+export class GenerateTextDTO {
   @ApiProperty({ example: 'Your prompt text here' })
   @IsString()
   prompt: string;
@@ -13,7 +13,7 @@ export function ApiGenerateText() {
     propertyKey: string,
     descriptor: PropertyDescriptor,
   ) {
-    ApiBody({ type: GenerateTextDto })(target, propertyKey, descriptor);
+    ApiBody({ type: GenerateTextDTO })(target, propertyKey, descriptor);
     ApiResponse({ status: 200, description: 'Returns the generated text' })(
       target,
       propertyKey,
