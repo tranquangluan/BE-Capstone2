@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AppService } from './app.service';
-import { GoogleAiModule } from './modules/GoogleAi/GoogleAi.module';
+import { GoogleAiModule } from './GoogleAiModule';
 import { ConfigModule } from '@nestjs/config';
+import { FirebaseModule } from './FirebaseModule';
 
 @Module({
   imports: [
@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
       envFilePath: '.env',
     }),
     GoogleAiModule,
+    FirebaseModule,
   ],
   controllers: [],
   providers: [],

@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from './application/di/AppModule';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger, NotFoundException  } from '@nestjs/common';
 import * as admin from 'firebase-admin';

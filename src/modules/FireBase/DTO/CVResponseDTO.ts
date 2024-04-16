@@ -1,3 +1,4 @@
+
 export class CVResponseDto {
     readonly status: string;
     readonly data: CVDataDto;

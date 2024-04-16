@@ -1,0 +1,19 @@
+export enum AppCode {
+  SUCCESS = "APP-2000", //* success
+  UNAUTHORIZED_ACCESS = "AE-APP-4003", //* unauthorized access
+  INVALID_PARAMETER = "AE-APP-4000", //* invalid parameter
+  VALIDATION_FAILURE = "AE-APP-4021", //* validation failure
+  INTERNAL_SERVER_ERROR = "AE-APP-5000", //* internal server error
+  CONFIGURATION_ERROR = "AE-APP-5001", //* configuration error
+  ENTITY_NOT_FOUND_ERROR = "AE-APP-5000", //* entity not found error
+  ENTITY_ALREADY_EXISTED_ERROR = "AE-APP-4090",
+  // UNSUPPORTED_OPERATION = "APP-4001",
+  // DEPRECATED_API = "APP-4001",
+  // INVALID_ACTION = "APP-4010",
+  // INVALID_ACTION_NAME = "APP-4014",
+  // NO_CONFIGURATION_FOUND_IN_ACTION = "APP-4016",
+  // UNAUTHORIZED_DOMAIN = "APP-4019",
+  // USER_NOT_SIGNED_IN = "APP-4020",
+  // VALIDATION_FAILURE = "APP-4028",
+  // AUTHENTICATION_FAILURE = "APP-5010",
+}
