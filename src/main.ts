@@ -23,18 +23,6 @@ admin.initializeApp({
   databaseURL: 'https://hicv-8be71.firebaseio.com'
 });
 
-const db = admin.firestore();
-
-async function createUser(user: any) {
-  try {
-    const docRef = db.collection('userss').doc();
-    await docRef.set(user);
-    return docRef.id;
-  } catch (error) {
-    Logger.error(`Failed to create user: ${error.message}`);
-    throw new NotFoundException('Failed to create user');
-  }
-}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule,{cors:false});
@@ -54,10 +42,4 @@ async function bootstrap() {
   });
 }
 
-bootstrap().then(async () => {
-  const userId = await createUser({
-    name: 'Test User',
-    email: 'test@example.com',
-  });
-  // console.log("Created new user with ID:" ${userId});
-});
+bootstrap();
