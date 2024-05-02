@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { GoogleAiModule } from './GoogleAiModule';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FirebaseModule } from './FirebaseModule';
+import { RedisModule } from './RedisModule';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -10,6 +12,8 @@ import { FirebaseModule } from './FirebaseModule';
     }),
     GoogleAiModule,
     FirebaseModule,
+    RedisModule
+    
   ],
   controllers: [],
   providers: [],

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TextServiceClient } from '@google-ai/generativelanguage';
 import { GoogleAuth } from 'google-auth-library';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { RedisService } from './RedisService';
 
 
 
