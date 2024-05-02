@@ -2,7 +2,7 @@ import { IsOptional } from "class-validator";
 
 export class CreateEducation{
     @IsOptional()
-    date?:Date;
+    date?:string;
     @IsOptional()
     degree?:string;
     @IsOptional()

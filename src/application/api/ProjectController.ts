@@ -19,29 +19,29 @@ import { ApiTags } from '@nestjs/swagger';
 export class ProjectController{
     constructor(private readonly projectService: ProjectService){}
     @Get()
-    async getAllEducations(): Promise<Projects[]>{
-        return this.projectService.getAllExperiences();
+    async getAllProjects(): Promise<Projects[]>{
+        return this.projectService.getAllProjects();
     }
 
     @Get(':id')
-    async getEducationById(@Param('id') id: string): Promise<Projects>{
-        return this.projectService.getExperienceById(id);
+    async getProjectById(@Param('id') id: string): Promise<Projects>{
+        return this.projectService.getProjectById(id);
     }
 
     @Post()
-    async createEducation(@Body() createProject: CreateProject): Promise<Projects> {
-        return this.projectService.createExperience(createProject);
+    async createProject(@Body() createProject: CreateProject): Promise<Projects> {
+        return this.projectService.createProject(createProject);
     }
 
     @Patch(':id')
-    async updateEducation(
+    async updateProject(
         @Param('id') id:string,
         @Body() updateProject: UpdateProject,): Promise<Projects>{
-            return this.projectService.updateExperience(id,updateProject);
+            return this.projectService.updateProject(id,updateProject);
     }
 
     @Delete(':id')
-    async deleteEducation(@Param('id') id:string):Promise<void>{
-        return this.projectService.deleteExperience(id);
+    async deleteProject(@Param('id') id:string):Promise<void>{
+        return this.projectService.deleteProject(id);
     }
 }

@@ -13,5 +13,6 @@ import { FirebaseModule } from './FirebaseModule';
   ],
   controllers: [],
   providers: [],
+  exports:[]
 })
 export class AppModule {}

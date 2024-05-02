@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './application/di/AppModule';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { Logger, NotFoundException  } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 
 const serviceAccount = {
@@ -23,23 +23,10 @@ admin.initializeApp({
   databaseURL: 'https://hicv-8be71.firebaseio.com'
 });
 
-const db = admin.firestore();
-
-async function createUser(user: any) {
-  try {
-    const docRef = db.collection('userss').doc();
-    await docRef.set(user);
-    return docRef.id;
-  } catch (error) {
-    Logger.error(`Failed to create user: ${error.message}`);
-    throw new NotFoundException('Failed to create user');
-  }
-}
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule,{cors:false});
   app.enableCors({
-    origin: 'http://localhost:3000', // Replace with your client's origin
+    origin: 'http://localhost:3000',
   });
   const swaggerConfig = new DocumentBuilder().setVersion('1.0').build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
@@ -54,10 +41,4 @@ async function bootstrap() {
   });
 }
 
-bootstrap().then(async () => {
-  const userId = await createUser({
-    name: 'Test User',
-    email: 'test@example.com',
-  });
-  // console.log("Created new user with ID:" ${userId});
-});
+bootstrap();

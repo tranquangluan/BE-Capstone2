@@ -5,7 +5,7 @@ export class Experiences{
   // @PrimaryGeneratedColumn()
   // id: string;
   @Column({name:'date', nullable:false})
-  date: Date;
+  date: string;
   @Column({name:'company', nullable:true})
   company: string;
   @Column({name:'description', nullable:false})

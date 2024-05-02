@@ -5,7 +5,7 @@ export class Projects{
   // @PrimaryGeneratedColumn()
   // id: string;
   @Column({name:'date', nullable:false})
-  date: Date;
+  date: string;
   @Column({name:'description', nullable:false})
   description: string[];
   @Column({name:'name', nullable:false})

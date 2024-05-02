@@ -5,14 +5,13 @@ export class Education{
   // @PrimaryGeneratedColumn()
   // id: string;
   @Column({name:'date', nullable:false})
-  date: Date;
+  date: string;
   @Column({name:'degree', nullable:false})
   degree: string;
-  @Column({name:'description', nullable:false})
-  description: string[];
   @Column({name:'gpa', nullable:false})
-  gpa: Double;
+  gpa: string;
   @Column({name:'school', nullable:false})
   school: string;
-
+  @Column({name:'description', nullable:false})
+  description: string[];
 }

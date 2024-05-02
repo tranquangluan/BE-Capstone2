@@ -38,15 +38,7 @@ export class ExperienceService{
           ...createExperience.data(),
         } as Experiences;
       }
-    // async createEducation(education: Partial<Education>): Promise<Education> {
-    //     const educationDocRef = admin.firestore().collection('Education').doc();
-    //     await educationDocRef.set(education);
-    //     const createEducation = await educationDocRef.get();
-    //     return {
-    //     //   id: createEducation.id,
-    //       ...createEducation.data(),
-    //     } as Education;
-    //   }
+    
     async updateExperience(id: string, experience: Partial<Experiences>): Promise<Experiences> {
         const experienceDocRef = admin.firestore().collection('Experiences').doc(id);
         await experienceDocRef.update(experience);
