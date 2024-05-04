@@ -2,7 +2,7 @@ import { IsOptional } from "class-validator";
 
 export class CreateExperience{
     @IsOptional()
-    date?:Date;
+    date?:string;
     @IsOptional()
     company?:string;
     @IsOptional()

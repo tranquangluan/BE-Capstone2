@@ -9,6 +9,9 @@ import { ExperienceService } from '../services/ExperienceService';
 import { SkillService } from '../services/SkillService';
 import { UserService } from '../services/UserService';
 import { MappingService } from '../services/MappingService';
+import { RedisModule } from './RedisModule';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RedisService } from '../services/RedisService';
 
 @Module({
   imports: [],
@@ -23,6 +26,8 @@ import { MappingService } from '../services/MappingService';
     SkillService,
     UserService,
     MappingService,
+    ConfigService,
+    RedisService
   ],
 })
 export class GoogleAiModule {}

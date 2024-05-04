@@ -7,6 +7,10 @@ export enum CategoryType {
   
 }
 export class ReWriteContentDTO {
+  @IsString()
+  @ApiProperty()
+  userId: string;
+
   @ApiProperty({
     description: 'The category type (Experience or Project)',
     example: CategoryType.Experience,

@@ -2,7 +2,7 @@ import { IsOptional } from "class-validator";
 
 export class CreateProject{
     @IsOptional()
-    date?:Date;
+    date?:string;
     @IsOptional()
     description?:string[];
     @IsOptional()

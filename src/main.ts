@@ -23,6 +23,7 @@ admin.initializeApp({
   databaseURL: 'https://hicv-8be71.firebaseio.com'
 });
 
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule,{cors:false});
   app.enableCors({

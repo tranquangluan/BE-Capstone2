@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GoogleAiService } from './GoogleAiService';
 import { JobDescriptionDTO } from 'src/core/DTO/JobDescriptionDTO';
+import { ResumeDTO } from 'src/core/DTO/ResumeDTO';
 
 
 @Injectable()
