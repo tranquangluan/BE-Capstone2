@@ -5,20 +5,22 @@ export class resumes{
   @Column({name:'Resume'})
   Resume: Resume;
   @Column({name:'Settings'})
-  Settings: Settings;
+  Settings: Settings | null;
 
-  // constructor(
-  //   Resume: Resume,
-  //   Settings: Settings
-  // ) {
-  //   this.Resume = Resume;
-  //   this.Settings = Settings;
-  // };
   constructor(
-    Resume: Resume,
+    Resume: Resume, 
+    Settings: Settings | null = null 
   ) {
     this.Resume = Resume;
-  }
+    this.Settings = Settings;
+  };
+  // constructor(
+  //   Resume: Resume,
+  
+  // ) {
+  //   this.Resume = Resume;
+    
+  // }
 }
 
 

@@ -11,6 +11,6 @@ import { ResumeController } from '../api/ResumeController';
 @Module({
   imports: [],
   controllers: [EducationController, ExperienceController, ProjectController, ResumeController],
-  providers: [EducationService, ExperienceService , ProjectService, ResumeService],
+  providers: [EducationService, ExperienceService, ProjectService, ResumeService],
 })
 export class FirebaseModule {}

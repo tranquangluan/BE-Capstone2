@@ -9,8 +9,10 @@ export class JobDescriptionDTO {
   @IsString()
   jobObjective: string;
 
+  @IsString()
+  educations: string[];
+
   @ValidateNested()
-  
   skills: string[];
 
   @IsString()
@@ -22,12 +24,14 @@ export class JobDescriptionDTO {
   constructor(
     jobTitle: string,
     jobObjective: string,
+    educations: string[],
     skills: string[],
     experience: string,
     personalQualities: string[]
   ) {
     this.jobTitle = jobTitle;
     this.jobObjective = jobObjective;
+    this.educations = educations;
     this.skills = skills;
     this.experience = experience;
     this.personalQualities = personalQualities;
