@@ -73,20 +73,33 @@ export class GoogleAiController {
   @Post('generateGemini1')
   @JobDescriptionInput()
   public async generateGeminiPro1(
-    @Body() jobDescriptionInputDTO: JobDescriptionInputDTO
+    @Body() jobDescriptionInputDTO: JobDescriptionInputDTO,
   ): Promise<CoreApiResponse<JobDescriptionDTO>> {
+    let language = await this.languageService.detectLanguage(jobDescriptionInputDTO.jobDescription);
     let require =
-      'Hãy dựa vào thông tin này hãy rút gọn nội dung và vui lòng cung cấp với các trường như sau: {"JobTitle": "Tên của vị trí công việc","JobObjective": "Mục tiêu chính của công việc","Skills": "Danh sách kỹ năng cần thiết","Experience": "Yêu cầu về kinh nghiệm","PersonalQualities": "Các phẩm chất doanh nghiệp mong muốn"} với Skills và PersonalQualities được trả về dưới dạng mảng nếu không có dữ liệu thì trả về mảng rỗng, nếu trường nào không có dữ liệu thì mang giá trị null. Dự đoán giá trị của các trường null và trả về giá trị đó';
-    let afterProcessJD = await this.languageService.preProcessJD(jobDescriptionInputDTO.jobDescription);
+      'Hãy dựa vào thông tin này hãy rút gọn nội dung và vui lòng cung cấp với các trường với cấu trúc JSON như sau: {"JobTitle": "Tên của vị trí công việc","JobObjective": "Mục tiêu chính của công việc","Skills": "Danh sách kỹ năng cần thiết","Experience": "Yêu cầu về kinh nghiệm","PersonalQualities": "Các phẩm chất doanh nghiệp mong muốn"} với Skills và PersonalQualities được trả về dưới dạng mảng nếu không có dữ liệu thì trả về mảng rỗng, nếu trường nào không có dữ liệu thì mang giá trị null. Dự đoán giá trị của các trường null và trả về giá trị đó';
+    let afterProcessJD = await this.languageService.preProcessJD(
+      jobDescriptionInputDTO.jobDescription,language
+    );
+    
     let final = require.concat(afterProcessJD);
+    if(language === 'vi'){
+      final = require.concat(afterProcessJD).concat(".Giá trị trả về là tiếng việt")
+    } else if (language = "en"){
+      final = require.concat(afterProcessJD).concat(".Các giá trị trả về là tiếng anh")
+    }
     
     try {
-      const generatedGeminiProContent = await this.googleAiService.generateGeminiPro(final);
-      
+      const generatedGeminiProContent =
+        await this.googleAiService.generateGeminiPro(final);
+        
       if (typeof generatedGeminiProContent === 'string') {
-
-        const result: JobDescriptionDTO = await this.languageService.convertJDToDTO(jobDescriptionInputDTO.userId,generatedGeminiProContent);
-
+        const result: JobDescriptionDTO =
+          await this.languageService.convertJDToDTO(
+            jobDescriptionInputDTO.userId,
+            generatedGeminiProContent,
+          );
+          
         return CoreApiResponse.success(result);
       }
       if (!generatedGeminiProContent) {
