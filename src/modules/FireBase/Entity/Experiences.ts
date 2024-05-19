@@ -9,7 +9,7 @@ export class Experiences{
   @Column({name:'company', nullable:true})
   company: string;
   @Column({name:'description', nullable:false})
-  description: string[];
+  descriptions: string[];
   @Column({name:'jobTitle', nullable:false})
   jobTitle: string;
 

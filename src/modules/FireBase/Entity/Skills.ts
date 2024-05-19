@@ -5,6 +5,9 @@ export class Skills{
   // @PrimaryGeneratedColumn()
   // id: string;
   @Column({name:'description', nullable:false})
-  description: string[];
+  descriptions: string[];
+
+  @Column({name:'uid', nullable:false})
+  uid: string;
 
 }

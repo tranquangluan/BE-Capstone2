@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import * as admin from "firebase-admin";
 import { Projects } from "../../modules/FireBase/Entity/Projects";
+import { CoreApiResponse } from "src/core/common/api/CoreApiResponse";
 
 @Injectable()
 export class ProjectService{
@@ -19,14 +20,20 @@ export class ProjectService{
     }
 
 
-    async getProjectById(id: string): Promise<Projects>{
-        const projectDoc = await admin.firestore().collection('Projects').doc(id).get();
-        if(!projectDoc.exists){
-            new Error('Project not found!!!')
+    async getProjectById(id: string): Promise<CoreApiResponse<Projects>>{
+        try{
+            const projectDoc = await admin.firestore().collection('Projects').doc(id).get();
+            if(!projectDoc.exists){
+                new Error('Project not found!!!')
+            }
+            const projects : Projects =  {
+                ...projectDoc.data(),
+            }as Projects;
+            return CoreApiResponse.success(projects)
+        }catch(error){
+            return CoreApiResponse.error(500, error.message);
         }
-        return {
-            ...projectDoc.data(),
-        }as Projects;
+        
     }
 
     async createProject(project: Partial<Projects>): Promise<Projects> {

@@ -39,6 +39,22 @@ export class EducationService{
         }
     }
 
+    // async getEducationById(id: string): Promise<Education>{
+    //     try{
+    //         const educationDoc = await admin.firestore().collection('Education').doc(id).get();
+    //     if(!educationDoc.exists){
+    //         throw new Error('Education not found!!!')
+    //     }
+    //     const education : Education = {
+    //         ...educationDoc.data(),
+    //     }as Education;
+    //     console.log(education);
+    //     return education;
+    //     }catch(error){
+    //         return error;
+    //     }
+    // }
+
     async createEducation(education: Partial<Education>): Promise<CoreApiResponse<Education>> {
         try{
             const educationCollection = admin.firestore().collection('Education');

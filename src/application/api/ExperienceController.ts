@@ -22,10 +22,10 @@ export class ExperienceController{
         return this.experienceService.getAllExperiences();
     }
 
-    @Get(':id')
-    async getEducationById(@Param('id') id: string): Promise<Experiences>{
-        return this.experienceService.getExperienceById(id);
-    }
+    // @Get(':id')
+    // async getEducationById(@Param('id') id: string): Promise<Experiences>{
+    //     return this.experienceService.getExperienceById(id);
+    // }
 
     @Post()
     async createEducation(@Body() createEducation: CreateExperience): Promise<Experiences> {

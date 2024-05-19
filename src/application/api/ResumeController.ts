@@ -8,7 +8,7 @@ import {
     Delete,
 } from '@nestjs/common';
 import { ResumeService } from '../services/ResumeService';
-import { resumes } from '../../modules/FireBase/Entity/resumes';
+import { Resumes } from '../../modules/FireBase/Entity/resumes';
 import { CreateResume } from '../../modules/FireBase/DTO/ResumesDTO/CreateResume';
 import { UpdateResume } from '../../modules/FireBase/DTO/ResumesDTO/UpdateResume';
 import { ApiTags } from '@nestjs/swagger';
@@ -18,24 +18,24 @@ import { ApiTags } from '@nestjs/swagger';
 export class ResumeController{
     constructor(private readonly resumeService: ResumeService){}
     @Get()
-    async getAllResumes(): Promise<resumes[]>{
+    async getAllResumes(): Promise<Resumes[]>{
         return this.resumeService.getAllResumes();
     }
 
     @Get(':id')
-    async getResumeById(@Param('id') id: string): Promise<resumes>{
+    async getResumeById(@Param('id') id: string): Promise<Resumes>{
         return this.resumeService.getResumeById(id);
     }
 
     @Post()
-    async createResume(@Body() createResume: CreateResume): Promise<resumes> {
+    async createResume(@Body() createResume: CreateResume): Promise<Resumes> {
         return this.resumeService.createResume(createResume);
     }
 
     @Patch(':id')
     async updateResume(
         @Param('id') id:string,
-        @Body() updateResume: UpdateResume,): Promise<resumes>{
+        @Body() updateResume: UpdateResume,): Promise<Resumes>{
             return this.resumeService.updateResume(id,updateResume);
     }
 

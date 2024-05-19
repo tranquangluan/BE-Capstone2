@@ -1,7 +1,7 @@
 import {Entity, PrimaryGeneratedColumn , Column, Double} from 'typeorm';
 
 @Entity()
-export class resumes{
+export class Resumes{
   @Column({name:'Resume'})
   Resume: Resume;
   @Column({name:'Settings'})
@@ -98,6 +98,7 @@ export interface ResumeProfile {
     };
     formsOrder: ShowForm[];
     showBulletPoints: {
+      workExperiences: boolean;
       educations: boolean;
       projects: boolean;
       skills: boolean;

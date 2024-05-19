@@ -13,5 +13,5 @@ export class Education{
   @Column({name:'school', nullable:false})
   school: string;
   @Column({name:'description', nullable:false})
-  description: string[];
+  descriptions: string[];
 }

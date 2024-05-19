@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import * as admin from "firebase-admin";
 import { Experiences } from "../../modules/FireBase/Entity/Experiences";
+import { CoreApiResponse } from "src/core/common/api/CoreApiResponse";
 
 @Injectable()
 export class ExperienceService{
@@ -19,14 +20,20 @@ export class ExperienceService{
     }
 
 
-    async getExperienceById(id: string): Promise<Experiences>{
-        const experienceDoc = await admin.firestore().collection('Experiences').doc(id).get();
-        if(!experienceDoc.exists){
-            new Error('Experience not found!!!')
+    async getExperienceById(id: string): Promise<CoreApiResponse<Experiences>>{
+
+        try{
+            const experienceDoc = await admin.firestore().collection('Experiences').doc(id).get();
+            if(!experienceDoc.exists){
+                new Error('Experience not found!!!')
+            }
+            const experience : Experiences =  {
+                ...experienceDoc.data(),
+            }as Experiences;
+            return CoreApiResponse.success(experience);
+        }catch(error){
+            return CoreApiResponse.error(500, error.message);
         }
-        return {
-            ...experienceDoc.data(),
-        }as Experiences;
     }
 
     async createExperience(experience: Partial<Experiences>): Promise<Experiences> {

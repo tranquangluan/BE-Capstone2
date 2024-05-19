@@ -3,6 +3,7 @@ import { GoogleAiService } from './GoogleAiService';
 import { JobDescriptionDTO } from 'src/core/DTO/JobDescriptionDTO';
 import { ResumeDTO } from 'src/core/DTO/ResumeDTO';
 import { RedisService } from './RedisService';
+import { CoreApiResponse } from 'src/core/common/api/CoreApiResponse';
 
 @Injectable()
 export class LanguageService {
@@ -85,10 +86,7 @@ export class LanguageService {
     return result;
   }
 
-  public async convertJDToDTO(
-    userId: string,
-    contentJD: string,
-  ): Promise<JobDescriptionDTO> {
+  public async convertJDToDTO(userId: string, contentJD: string,): Promise<JobDescriptionDTO> {
     try {
       const json = JSON.parse(contentJD);
       let jobDescription = new JobDescriptionDTO(
@@ -104,6 +102,18 @@ export class LanguageService {
       return jobDescription;
     } catch (error) {
       throw new Error(`Failed to convert JD to DTO: ${error.message}`);
+    }
+  }
+  public async cleanInputPromt(stringInput: string,): Promise<CoreApiResponse<string>> {
+    try {
+      console.log(stringInput)
+      const required = 'Dựa vào dữ liệu này. Hãy lấy ra dữ liệu json và loại bỏ những dữ liệu dư thừa bên ngoài.'
+      const resultRequired= required.concat(stringInput)
+      const result = await this.googleAiService.generateGeminiPro(resultRequired)
+      console.log(result)
+      return CoreApiResponse.success(result);
+    } catch (error) {
+      throw new Error(`Failed to clean input data: ${error.message}`);
     }
   }
 

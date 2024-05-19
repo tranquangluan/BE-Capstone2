@@ -23,10 +23,10 @@ export class ProjectController{
         return this.projectService.getAllProjects();
     }
 
-    @Get(':id')
-    async getProjectById(@Param('id') id: string): Promise<Projects>{
-        return this.projectService.getProjectById(id);
-    }
+    // @Get(':id')
+    // async getProjectById(@Param('id') id: string): Promise<Projects>{
+    //     return this.projectService.getProjectById(id);
+    // }
 
     @Post()
     async createProject(@Body() createProject: CreateProject): Promise<Projects> {

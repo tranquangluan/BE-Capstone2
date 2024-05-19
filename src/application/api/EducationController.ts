@@ -27,6 +27,10 @@ export class EducationController{
     async getEducationById(@Param('id') id: string): Promise<CoreApiResponse<Education>>{
         return this.educationService.getEducationById(id);
     }
+    // @Get(':id')
+    // async getEducationById(@Param('id') id: string): Promise<Education>{
+    //     return this.educationService.getEducationById(id);
+    // }
 
     @Post()
     async createEducation(@Body() createEducation: CreateEducation): Promise<CoreApiResponse<Education>> {

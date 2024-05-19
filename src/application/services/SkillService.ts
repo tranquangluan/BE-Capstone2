@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import * as admin from "firebase-admin";
 import { Skills } from "../../modules/FireBase/Entity/Skills";
+import { CoreApiResponse } from "src/core/common/api/CoreApiResponse";
 
 @Injectable()
 export class SkillService{
@@ -19,14 +20,19 @@ export class SkillService{
     }
 
 
-    async getSkillById(id: string): Promise<Skills>{
-        const skillDoc = await admin.firestore().collection('Skills').doc(id).get();
-        if(!skillDoc.exists){
-            new Error('Skill not found!!!')
+    async getSkillById(id: string): Promise<CoreApiResponse<Skills>>{
+        try{
+            const skillDoc = await admin.firestore().collection('Skills').doc(id).get();
+            if(!skillDoc.exists){
+                new Error('Skill not found!!!')
+            }
+            const skills : Skills =  {
+                ...skillDoc.data(),
+            }as Skills;
+            return CoreApiResponse.success(skills);
+        }catch(error){
+            return CoreApiResponse.error(500, error.message);
         }
-        return {
-            ...skillDoc.data(),
-        }as Skills;
     }
 
     async createSkill(skill: Partial<Skills>): Promise<Skills> {

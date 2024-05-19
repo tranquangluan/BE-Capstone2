@@ -16,11 +16,12 @@ import { SkillService } from '../services/SkillService';
 import { UserService } from '../services/UserService';
 import { log } from 'console';
 import { Education } from 'src/modules/FireBase/Entity/Education';
-import { ResumeEducation, ResumeProfile, ResumeProject, ResumeSkills, ResumeWorkExperience, resumes } from 'src/modules/FireBase/Entity/Resumes';
+import { ResumeEducation, ResumeProfile, ResumeProject, ResumeSkills, ResumeWorkExperience, Resumes } from 'src/modules/FireBase/Entity/Resumes';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 import { JobDescriptionInput, JobDescriptionInputDTO } from 'src/core/DTO/JobDescriptionInputDTO';
 import { MappingInput } from 'src/core/DTO/MappingInput';
 import { RedisService } from '../services/RedisService';
+import { Skills } from 'src/modules/FireBase/Entity/Skills';
 
 @Controller('AI')
 @ApiTags("AI")
@@ -38,35 +39,14 @@ export class GoogleAiController {
     private readonly redisService: RedisService,
   ) {}
 
-  // @Post('rewriteContent')
-  // @JobDescriptionInput()
-  // public async rewriteContent(@Body('prompt') prompt: string): Promise<string> {
-  //   let require = 'Hãy viết lại câu kèm theo văn phong với nội dung ngắn gọn và xúc tích để thêm vào cv, lấy dữ liệu xâu vào trọng tâm và lượt bỏ giải thích dài dòng.';
-  //   let final = require.concat(prompt);
-  //   try {
-  //     const generatedGeminiProContent = await this.googleAiService.generateGeminiPro(final);
-  //     if (!generatedGeminiProContent) {
-  //       throw new NotFoundException('Unable to generate Gemini Pro content.');
-  //     }
-  //     return generatedGeminiProContent;
-  //   } catch (error) {
-  //     throw new InternalServerErrorException('Internal server error');
-  //   }
-  // }
-
-  // @Post('plainText')
-  // @ApiGenerateText()
-  // public async processToPlainText(@Body('prompt') prompt: string): Promise<CoreApiResponse<string>> {
-  //   let afterProcessJD = await this.languageService.preProcessJD(prompt);
-  //   return CoreApiResponse.success(afterProcessJD);
-  // }
-  @Post('generateGemini1')
+  
+  @Post('parseJobDescriptionToDTO')
   @JobDescriptionInput()
   public async generateGeminiPro1(
     @Body() jobDescriptionInputDTO: JobDescriptionInputDTO
   ): Promise<CoreApiResponse<JobDescriptionDTO>> {
     let require =
-      'Hãy dựa vào thông tin này hãy rút gọn nội dung và vui lòng cung cấp với các trường như sau: {"JobTitle": "Tên của vị trí công việc","JobObjective": "Mục tiêu chính của công việc","Educations": "Yêu cầu về học vấn của doanh nghiệp","Skills": "Danh sách kỹ năng cần thiết","Experience": "Yêu cầu về kinh nghiệm","PersonalQualities": "Các phẩm chất doanh nghiệp mong muốn"} với Skills và PersonalQualities được trả về dưới dạng mảng nếu không có dữ liệu thì trả về mảng rỗng, nếu trường nào không có dữ liệu thì mang giá trị null. Dự đoán giá trị của các trường null và trả về giá trị đó';
+      'Hãy dựa vào thông tin này hãy rút gọn nội dung và vui lòng cung cấp với các trường có nội dung như sau: {"JobTitle": "Tên của vị trí công việc","JobObjective": "Công việc mà doanh nghiệp mô tả","Educations": "Yêu cầu về học vấn của doanh nghiệp","Skills": "Danh sách kỹ năng cần thiết, datatype là string[]","Experience": "Yêu cầu về kinh nghiệm, datatype là string[]","PersonalQualities": "Các phẩm chất doanh nghiệp mong muốn, datatype là string[]"} với Skills và PersonalQualities được trả về dưới dạng mảng nếu không có dữ liệu thì trả về mảng rỗng, nếu trường nào không có dữ liệu thì mang giá trị null. Dự đoán giá trị của các trường null và trả về giá trị đó';
     let afterProcessJD = await this.languageService.preProcessJD(jobDescriptionInputDTO.jobDescription);
     let final = require.concat(afterProcessJD);
     try {
@@ -84,29 +64,6 @@ export class GoogleAiController {
   }
 
 
-  // @Post('partResumeDTO')
-  // @ApiGenerateText()
-  // public async generate(@Body('prompt') prompt: string): Promise<CoreApiResponse<JobDescriptionDTO>> {
-  //   // let require ='Hãy dựa vào thông tin này hãy rút gọn nội dung và vui lòng cung cấp với các trường như sau: {"JobTitle": "Tên của vị trí công việc","JobObjective": "Mục tiêu chính của công việc","Skills": "Danh sách kỹ năng cần thiết","Experience": "Yêu cầu về kinh nghiệm","PersonalQualities": "Các phẩm chất doanh nghiệp mong muốn"} với Skills và PersonalQualities được trả về dưới dạng mảng nếu không có dữ liệu thì trả về mảng rỗng, nếu trường nào không có dữ liệu thì mang giá trị null. Dự đoán giá trị của các trường null và trả về giá trị đó';
-  //   let require ='Hãy dựa vào thông tin sau hãy rút gọn nội dung và vui lòng cung cấp với các trường như sau: {\"JobTitle\": \"Tên của vị trí công việc\",\"JobObjective\": \"Mục tiêu chính của công việc\",\"Educations\": \"Yêu cầu về học vấn của doanh nghiệp\",\"Skills\": \"Danh sách kỹ năng cần thiết\",\"Experiences\": \"Yêu cầu về kinh nghiệm\",\"PersonalQualities\": \"Các phẩm chất doanh nghiệp mong muốn\"}';
-  //   let afterProcessJD = await this.languageService.preProcessJD(prompt);
-  //   let final = require.concat(afterProcessJD);
-  //   try {
-  //     const generatedGeminiProContent = await this.googleAiService.generateGeminiPro(final);
-  //     if (typeof generatedGeminiProContent === 'string') {
-  //       const result: JobDescriptionDTO = await this.languageService.convertJDToDTO("1",generatedGeminiProContent);
-  //       return CoreApiResponse.success(result);
-  //     }
-  //     if (!generatedGeminiProContent) {
-  //       throw new NotFoundException('Unable to generate Gemini Pro content.');
-  //     }
-  //   } catch (error) {
-  //     throw new InternalServerErrorException('Internal server error');
-  //   }
-  // }
-  // End JD to JSON Object
-
-  // Begin summary content of a description in capacity profile
   @Post('shortenParagraphs')
   @ApiGenerateText()
   public async generateShort(
@@ -125,13 +82,7 @@ export class GoogleAiController {
       throw new InternalServerErrorException('Internal server error');
     }
   }
-  // End summary content of a description in capacity profile
-  // @Post('detectLanguage')
-  // @ApiGenerateText()
-  // public async detectLanguage(@Body('prompt') prompt: string): Promise<string> {
-  //   const result = await this.languageService.detectLanguage(prompt);
-  //   return result;
-  // } 
+
   @Post('rewriteParagraphs')
   @ApiRewriteText()
   public async rewrite(@Body() reWriteContentDTO: ReWriteContentDTO): Promise<CoreApiResponse<string>> {
@@ -145,43 +96,95 @@ export class GoogleAiController {
   }
 
 
-  @Get('mappinggggg/:id')
+  @Post('mapping')
   @MappingInput()
-  public async mappingAPIResumeAndJD(@Param('id') userId :string,): Promise<CoreApiResponse<resumes>> {
+  public async mappingAPIResumeAndJD(@Body('userId') userId :string,): Promise<CoreApiResponse<Resumes>> {
+    const promt = 'LG CNS đang tìm kiếm PM quản lý các dự án sử dụng nhân lực Việt Nam của team Công nghệ Giáo dục (Edutech) Phân tích các yêu cầu Service và chủ động lên danh sách công việc Đóng vai trò PM, lên kế hoạch và phát triển Development Plan.Quản lý tiến độ dự án. Báo cáo tình hình phát triển và Quản lý tình hình phát triển. Tạo và Quản lý Output kết quả phát triển. Tester/QA, Quản lý chất lượng. Xử lý VOC.Xác định và Xử lý các vấn đề phát triển.Quản lý Source và Version.Từ 3 năm kinh nghiệm thực tế ở vị trí Developer, thành thạo 1 ngôn ngữ Backend (Java, PHP, NodeJS v.v). Từ 3 năm kinh nghiệm ở vị trí Technical Leader, Team Leader. Có kinh nghiệm làm việc với Developer và BA để thực hiện các dự án .Có kiến thức và kinh nghiệm về quản lý Source Code, Unit Testing và Intergrated Testing. Có kinh nghiệm phát triển hoặc quản lý Agile Sprints.Có khả năng giao tiếp bằng Tiếng Anh.Có kinh nghiệm vận hành/sử dụng Jira/Confluence.'
+    +' Hãy dựa vào thông tin này hãy rút gọn nội dung và vui lòng cung cấp với các trường có nội dung như sau: {"JobTitle": "Tên của vị trí công việc","JobObjective": "Công việc mà doanh nghiệp mô tả","Educations": "Yêu cầu về học vấn của doanh nghiệp","Skills": "Danh sách kỹ năng cần thiết, datatype là string[]","Experience": "Yêu cầu về kinh nghiệm, datatype là string[]","PersonalQualities": "Các phẩm chất doanh nghiệp mong muốn, datatype là string[]"} với Skills và PersonalQualities được trả về dưới dạng mảng nếu không có dữ liệu thì trả về mảng rỗng, nếu trường nào không có dữ liệu thì mang giá trị null. Dự đoán giá trị của các trường null và trả về giá trị đó.'
+    const promtJson = await this.googleAiService.generateGeminiPro(promt);
+    let jobDes : JobDescriptionDTO;
+    if(typeof promtJson === 'string'){
+      const json = JSON.parse(promtJson);
+      jobDes = new JobDescriptionDTO(
+        json.JobTitle,
+        json.JobObjective,
+        json.Education,
+        json.Skills,
+        json.Experience,
+        json.PersonalQualities,
+      );
+    }
+    console.log(jobDes)
+
     let eduWP = await this.educationService.getEducationById(userId);
+    console.log(eduWP)
+    const eduDescription : string[] = eduWP.data.descriptions
     let resumeEducation: ResumeEducation = {
       school: eduWP.data.school,
       degree: eduWP.data.degree,
       date: eduWP.data.date,
       gpa: eduWP.data.gpa,
-      descriptions: eduWP.data.description,
+      descriptions: eduDescription,
     };
 
     let expWP = await this.experienceService.getExperienceById(userId);
+    console.log(expWP)
+    const expDescription : string[] = expWP.data.descriptions
     let resumeExperience: ResumeWorkExperience = {
-      company: expWP.company,
-      jobTitle: expWP.jobTitle,
-      date: expWP.date,
-      descriptions: expWP.description,
+      company: expWP.data.company,
+      jobTitle: expWP.data.jobTitle,
+      date: expWP.data.date,
+      descriptions: expDescription,
     };
 
     let skillWP = await this.skillService.getSkillById(userId);
-    let resumeSkill: ResumeSkills = {
-      featuredSkills: [],
-      descriptions: skillWP.description,
-    };
-    let projectWP = await this.projectService.getProjectById(userId);
-    let resumeProject: ResumeProject={
-      project: projectWP.name,
-      date: projectWP.date,
-      descriptions: projectWP.description,
-    };
+    console.log(skillWP)
+    console.log(typeof(skillWP))
+    let promtSkill = 'Hãy dựa vào thông tin này hãy rút gọn nội dung và vui lòng cung cấp với các trường có nội dung như sau: {featuredSkills: [{skill: "kỹ năng của hồ sơ năng lực" (datatype là string), rating: đánh giá tăng dần từ 1 đến 5 (datatype là string)},] datatype của featuredSkills là string[], descriptions: [] mô tả (datatype là string[]),}' + JSON.stringify(skillWP.data.descriptions)+' Nếu không có dữ liệu, trả về {featuredSkills: [],descriptions: [],}'
+    const resultSkill = await this.googleAiService.generateGeminiPro(promtSkill);
+    console.log(resultSkill)
+    console.log(typeof(resultSkill))    
+    let resumeSkill: ResumeSkills;
 
+if (typeof resultSkill === 'string') {
+  try {
+    const skills = JSON.parse(resultSkill);
+    resumeSkill = {
+      featuredSkills: skills.featuredSkills,
+      descriptions: skills.descriptions,
+    };
+  } catch (error) {
+    console.error('Error parsing resultSkill:', error);
+    resumeSkill = {
+      featuredSkills: [],
+      descriptions: [],
+    };
+  }
+} else {
+  console.error('Invalid resultSkill format:', resultSkill);
+  resumeSkill = {
+    featuredSkills: [],
+    descriptions: [],
+  };
+}
+        
+    
+    
+    let projectWP = await this.projectService.getProjectById(userId);
+    console.log(projectWP)
+    const proDescription : string[] = projectWP.data.descriptions;
+    let resumeProject: ResumeProject={
+      project: projectWP.data.name,
+      date: projectWP.data.date,
+      descriptions: proDescription,
+    };
     
     let resume = new ResumeDTO(null,resumeExperience,resumeEducation,resumeProject,resumeSkill,null);
-    const jobDescription : JobDescriptionDTO = await this.redisService.getObject(userId);
-    let resumes = this.mappingService.compare(jobDescription,resume)
+    console.log(resume)
+    let resumes = this.mappingService.compare(jobDes,resume)
   return resumes;
+  return null;
   }
+
 
 }

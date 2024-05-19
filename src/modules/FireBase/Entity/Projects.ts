@@ -7,7 +7,7 @@ export class Projects{
   @Column({name:'date', nullable:false})
   date: string;
   @Column({name:'description', nullable:false})
-  description: string[];
+  descriptions: string[];
   @Column({name:'name', nullable:false})
   name: string;
 
