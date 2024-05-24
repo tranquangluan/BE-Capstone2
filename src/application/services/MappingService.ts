@@ -4,7 +4,7 @@ import { JobDescriptionDTO } from 'src/core/DTO/JobDescriptionDTO';
 import { ResumeDTO } from 'src/core/DTO/ResumeDTO';
 import { ResumeEducation, ResumeProject, ResumeSkills, ResumeWorkExperience, Resumes } from 'src/modules/FireBase/Entity/Resumes';
 import { Resume } from '../../modules/FireBase/Entity/Resumes';
-import { CoreApiResponse } from 'src/core/common/api/CoreApiResponse';
+import { CoreApiResponse, CoreApiResponse1 } from 'src/core/common/api/CoreApiResponse';
 import { Experiences } from 'src/modules/FireBase/Entity/Experiences';
 import { Skills } from 'src/modules/FireBase/Entity/Skills';
 import { Education } from 'src/modules/FireBase/Entity/Education';
@@ -22,7 +22,7 @@ export class MappingService {
     
     }
 
-    async compare(jobDescription: JobDescriptionDTO, resume: ResumeDTO, uid: string, jd: string): Promise<CoreApiResponse<Resumes>> {
+    async compare(jobDescription: JobDescriptionDTO, resume: ResumeDTO, uid: string, jd: string): Promise<Resumes> {
       if (!jobDescription) {
         throw new NotFoundException('Job description not found');
       }
@@ -114,7 +114,7 @@ export class MappingService {
             Settings: null,
             uid: uid,
           }
-        return CoreApiResponse.success(resumes);
+        return resumes;
         } catch (error) {
           console.error('Lỗi xảy ra khi phân tích chuỗi JSON:', error);
         }

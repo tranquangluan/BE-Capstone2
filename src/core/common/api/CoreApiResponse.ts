@@ -71,3 +71,89 @@ export class CoreApiResponse<T = undefined> implements TCoreApiResponse<T> {
     );
   }
 }
+export class CoreApiResponse1<T1 = undefined, T2 = undefined> {
+  readonly metadata: ApiResponseMetadata;
+  readonly data1: T1;
+  readonly data2: T2;
+  private constructor(
+    status: number,
+    messageOrError: string | ErrorDTO,
+    data1: T1,
+    data2: T2,
+    success?: boolean,
+  ) {
+    this.metadata = new ApiResponseMetadata(status, messageOrError,success);
+    this.data1 = data1;
+    this.data2 = data2;
+  }
+
+  getErrorDisplay(): string {
+    if (this.metadata.message) return this.metadata.message;
+    else if (this.metadata.error) {
+      const error = this.metadata.error;
+      return `${error.code}:${error.message}`;
+    } else return "";
+  }
+
+  public static success<T1, T2>(data1?: T1, data2?: T2, status?: number): CoreApiResponse1<T1, T2> {
+    if (data1 !== undefined && data2 !== undefined) {
+      return new CoreApiResponse1<T1, T2>(status ?? 200, "Success", data1, data2, true);
+    } else if (data1 !== undefined) {
+      return new CoreApiResponse1<T1, T2>(status ?? 200, "Success", data1, undefined, true);
+    } else if (data2 !== undefined) {
+      return new CoreApiResponse1<T1, T2>(status ?? 200, "Success", undefined, data2, true);
+    } else {
+      return new CoreApiResponse1<T1, T2>(status ?? 200, "Success", undefined, undefined, true);
+    }
+  }
+
+  public static appError<T1, T2>(appError: AppError, data1?: T1, data2?: T2): CoreApiResponse1<T1, T2> {
+    if (data1 !== undefined && data2 !== undefined) {
+      return new CoreApiResponse1<T1, T2>(appError.getHttpStatus(), appError, data1, data2, false);
+    } else if (data1 !== undefined) {
+      return new CoreApiResponse1<T1, T2>(appError.getHttpStatus(), appError, data1, undefined, false);
+    } else if (data2 !== undefined) {
+      return new CoreApiResponse1<T1, T2>(appError.getHttpStatus(), appError, undefined, data2, false);
+    } else {
+      return new CoreApiResponse1<T1, T2>(appError.getHttpStatus(), appError, undefined, undefined, false);
+    }
+  }
+
+  public static error<T1, T2>(
+    status?: number,
+    messageOrError?: string | ErrorDTO,
+    data1?: T1,
+    data2?: T2,
+    success?: Boolean,
+  ): CoreApiResponse1<T1, T2> {
+    if (data1 !== undefined && data2 !== undefined) {
+      return new CoreApiResponse1<T1, T2>(
+        status ?? 500,
+        messageOrError ?? "Internal Server Error",
+        data1, data2,
+        false,
+      );
+    } else if (data1 !== undefined) {
+      return new CoreApiResponse1<T1, T2>(
+        status ?? 500,
+        messageOrError ?? "Internal Server Error",
+        data1,undefined,
+        false,
+      );
+    } else if (data2 !== undefined) {
+      return new CoreApiResponse1<T1, T2>(
+        status ?? 500,
+        messageOrError ?? "Internal Server Error",
+        undefined, data2,
+        false,
+      );
+    } else {
+      return new CoreApiResponse1<T1, T2>(
+        status ?? 500,
+        messageOrError ?? "Internal Server Error",
+        undefined,undefined,
+        false,
+      );
+    }
+  }
+}

@@ -4,6 +4,7 @@ import { JobDescriptionDTO } from 'src/core/DTO/JobDescriptionDTO';
 import { ResumeDTO } from 'src/core/DTO/ResumeDTO';
 import { RedisService } from './RedisService';
 import { CoreApiResponse } from 'src/core/common/api/CoreApiResponse';
+import { json } from 'stream/consumers';
 
 @Injectable()
 export class LanguageService {
@@ -43,6 +44,7 @@ export class LanguageService {
     } catch (error) {
       throw new Error(`Failed to convert JD to DTO: ${error.message}`);
     }
+    console.log(jobDescription)
     const language = await this.detectLanguage(content);
     if (language === 'false') {
       return 'Không thể xác định được ngôn ngữ';
@@ -98,7 +100,7 @@ export class LanguageService {
         json.PersonalQualities,
       );
       this.redisService.setObject(userId, jobDescription);
-
+      this.redisService.setObject("User".concat(userId), contentJD);
       return jobDescription;
     } catch (error) {
       throw new Error(`Failed to convert JD to DTO: ${error.message}`);

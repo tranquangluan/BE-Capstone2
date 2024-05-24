@@ -14,7 +14,7 @@ import { GoogleAiModule } from './GoogleAiModule';
       useFactory: async (configService: ConfigService) => ({
         store: await redisStore({
           url: 'redis://default:password@localhost:6379',
-          ttl: 360000,
+          ttl: 3600000,
         }),
       }),
       
