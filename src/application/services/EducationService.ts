@@ -5,7 +5,7 @@ import * as admin from "firebase-admin";
 
 @Injectable()
 export class EducationService{
-    async getAllEducations(): Promise<CoreApiResponse<Education[]>> {
+    async getAllEducations(): Promise<Education[]> {
         try{
             const educationCollection = admin.firestore().collection('Education');
             const snapshot = await educationCollection.get();
@@ -17,27 +17,36 @@ export class EducationService{
             }as Education;
             educations.push(education);
         });
-        return CoreApiResponse.success(educations);
+        return educations;
         }catch(error){
-            return CoreApiResponse.error(500, error.message);
+            return error.message;
         }
     }
 
 
-    async getEducationById(id: string): Promise<CoreApiResponse<Education>>{
+    async getEducationById(userId: string): Promise<CoreApiResponse<Education[]>>{
         try{
-            const educationDoc = await admin.firestore().collection('Education').doc(id).get();
-        if(!educationDoc.exists){
-            new Error('Education not found!!!')
-        }
-        const education : Education = {
-            ...educationDoc.data(),
-        }as Education;
-        return CoreApiResponse.success(education);
-        }catch(error){
+            const educationDocs = await this.getAllEducations();
+            const educations: Education[] = [];
+
+            for (const educationDoc of educationDocs) {
+              if (educationDoc.uid === userId) {
+                const education: Education = {
+                  ...educationDoc,
+                } as Education;
+                educations.push(education);
+              }
+            }
+        
+            if (educations.length === 0) {
+              throw new Error('Education not found!!!');
+            }
+        
+            return CoreApiResponse.success(educations);
+          } catch (error) {
             return CoreApiResponse.error(500, error.message);
+          }
         }
-    }
 
     // async getEducationById(id: string): Promise<Education>{
     //     try{

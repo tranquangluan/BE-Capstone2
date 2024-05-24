@@ -104,14 +104,16 @@ export class LanguageService {
       throw new Error(`Failed to convert JD to DTO: ${error.message}`);
     }
   }
-  public async cleanInputPromt(stringInput: string,): Promise<CoreApiResponse<string>> {
+  public async cleanInputPromt(stringInput: string,): Promise<string> {
     try {
-      console.log(stringInput)
-      const required = 'Dựa vào dữ liệu này. Hãy lấy ra dữ liệu json và loại bỏ những dữ liệu dư thừa bên ngoài.'
-      const resultRequired= required.concat(stringInput)
-      const result = await this.googleAiService.generateGeminiPro(resultRequired)
-      console.log(result)
-      return CoreApiResponse.success(result);
+      const required = 'Dựa vào dữ liệu mang kiểu string này:'
+      + stringInput 
+      +'. Hãy loại bỏ tất cả các ký hiệu dư thừa ở đầu và ở cuối đoạn data như : ``` và ```json và những lời dẫn như "kết quả là". Sau đó trả về kiểu json cho đoạn data đó. Sau khi loại bỏ chúng ta sẽ có đoạn dữ liệu mang kiểu string theo cấu trúc json. Dữ liệu bắt đầu từ dấu "{" đầu tiên và kết thúc ở đấu "}" cuối cùng. tôi chỉ cần dữ liệu json thôi không cần xem tính toán.'
+      const result = await this.googleAiService.generateGeminiPro(required)
+      const finalRequest = 'Hãy kiểm tra lại xem dữ liệu này có dữ liệu dư thừa không ví dụ dư thừa là: ```, ```json. Nếu có thì loại bỏ đi và trả về dữ liệu sạch. Dữ liệu là:'+result+'kết quả cuối cùng ở đây là dữ liệu string theo cấu trúc json. Nhấn mạnh là tôi chỉ cần dữ liệu bạn trả về là theo cấu trúc json và không có bất kỳ lời dẫn hay ký hiệu nào'
+      const final = await this.googleAiService.generateGeminiPro(finalRequest)
+      console.log(final)
+      return final;
     } catch (error) {
       throw new Error(`Failed to clean input data: ${error.message}`);
     }

@@ -8,7 +8,8 @@ export class Projects{
   date: string;
   @Column({name:'description', nullable:false})
   descriptions: string[];
-  @Column({name:'name', nullable:false})
-  name: string;
-
+  @Column({name:'project', nullable:false})
+  project: string;
+  @Column({name:'uid', nullable:false})
+  uid: string;
 }

@@ -20,21 +20,29 @@ export class ProjectService{
     }
 
 
-    async getProjectById(id: string): Promise<CoreApiResponse<Projects>>{
+    async getProjectById(userId: string): Promise<CoreApiResponse<Projects[]>>{
         try{
-            const projectDoc = await admin.firestore().collection('Projects').doc(id).get();
-            if(!projectDoc.exists){
-                new Error('Project not found!!!')
+            const projectDocs = await this.getAllProjects();
+            const projects: Projects[] = [];
+
+            for (const projectDoc of projectDocs) {
+              if (projectDoc.uid === userId) {
+                const project: Projects = {
+                  ...projectDoc,
+                } as Projects;
+                projects.push(project);
+              }
             }
-            const projects : Projects =  {
-                ...projectDoc.data(),
-            }as Projects;
-            return CoreApiResponse.success(projects)
-        }catch(error){
-            return CoreApiResponse.error(500, error.message);
-        }
         
-    }
+            if (projects.length === 0) {
+              throw new Error('Education not found!!!');
+            }
+        
+            return CoreApiResponse.success(projects);
+          } catch (error) {
+            return CoreApiResponse.error(500, error.message);
+          }
+        }
 
     async createProject(project: Partial<Projects>): Promise<Projects> {
         const projectCollection = admin.firestore().collection('Projects');

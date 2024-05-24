@@ -6,7 +6,9 @@ export class Resumes{
   Resume: Resume;
   @Column({name:'Settings'})
   Settings: Settings | null;
-
+  @Column({name:'uid', nullable:false})
+  uid: string;
+  
   constructor(
     Resume: Resume, 
     Settings: Settings | null = null 

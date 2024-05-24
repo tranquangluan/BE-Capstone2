@@ -22,6 +22,8 @@ import { JobDescriptionInput, JobDescriptionInputDTO } from 'src/core/DTO/JobDes
 import { MappingInput } from 'src/core/DTO/MappingInput';
 import { RedisService } from '../services/RedisService';
 import { Skills } from 'src/modules/FireBase/Entity/Skills';
+import { Experiences } from 'src/modules/FireBase/Entity/Experiences';
+import { Projects } from 'src/modules/FireBase/Entity/Projects';
 
 @Controller('AI')
 @ApiTags("AI")
@@ -116,74 +118,54 @@ export class GoogleAiController {
     }
     console.log(jobDes)
 
+    // console.log("Education");
     let eduWP = await this.educationService.getEducationById(userId);
-    console.log(eduWP)
-    const eduDescription : string[] = eduWP.data.descriptions
-    let resumeEducation: ResumeEducation = {
-      school: eduWP.data.school,
-      degree: eduWP.data.degree,
-      date: eduWP.data.date,
-      gpa: eduWP.data.gpa,
-      descriptions: eduDescription,
-    };
-
+    let resultEdu : Education[] = eduWP.data
+    const educationToArray : ResumeEducation[] = resultEdu.map(edu=>{
+      const { date, degree, school, gpa, descriptions } = edu;
+      return { date, degree, school, gpa, descriptions };
+    })
+    
+    // console.log("Experiences");
     let expWP = await this.experienceService.getExperienceById(userId);
-    console.log(expWP)
-    const expDescription : string[] = expWP.data.descriptions
-    let resumeExperience: ResumeWorkExperience = {
-      company: expWP.data.company,
-      jobTitle: expWP.data.jobTitle,
-      date: expWP.data.date,
-      descriptions: expDescription,
-    };
+    let resultExp : Experiences[] = expWP.data
+    const experienceToArray : ResumeWorkExperience[] = resultExp.map(exp=>{
+      const { date, company, jobTitle, descriptions } = exp;
+      return { date, company, jobTitle, descriptions };
+    })
+    
 
+    // console.log("Skills");
     let skillWP = await this.skillService.getSkillById(userId);
-    console.log(skillWP)
-    console.log(typeof(skillWP))
-    let promtSkill = 'Hãy dựa vào thông tin này hãy rút gọn nội dung và vui lòng cung cấp với các trường có nội dung như sau: {featuredSkills: [{skill: "kỹ năng của hồ sơ năng lực" (datatype là string), rating: đánh giá tăng dần từ 1 đến 5 (datatype là string)},] datatype của featuredSkills là string[], descriptions: [] mô tả (datatype là string[]),}' + JSON.stringify(skillWP.data.descriptions)+' Nếu không có dữ liệu, trả về {featuredSkills: [],descriptions: [],}'
-    const resultSkill = await this.googleAiService.generateGeminiPro(promtSkill);
-    console.log(resultSkill)
-    console.log(typeof(resultSkill))    
-    let resumeSkill: ResumeSkills;
+    let resultSkill : Skills[] = skillWP.data
+    // let promtSkill = 'Dựa vào thông tin này ' + JSON.stringify(skillWP.data)+' hãy rút gọn nội dung và vui lòng cung cấp với các trường có nội dung như sau: {descriptions: kỹ năng sau khi đã rút gọn (datatype là string[]),}. Nếu không có dữ liệu, trả về kết quả như cấu trúc sau:{descriptions: [],}'
+    // const resultSkillAI = await this.googleAiService.generateGeminiPro(promtSkill);
+    // console.log(resultSkillAI)
+    // if(typeof(resultSkillAI)==='string'){
+    //   const json = JSON.parse(resultSkillAI);
+    // }
+    const skillsToArray: ResumeSkills[] = resultSkill.map(skill => {
+      const { descriptions} = skill;
+      return { featuredSkills: [], descriptions};
+    });
 
-if (typeof resultSkill === 'string') {
-  try {
-    const skills = JSON.parse(resultSkill);
-    resumeSkill = {
-      featuredSkills: skills.featuredSkills,
-      descriptions: skills.descriptions,
-    };
-  } catch (error) {
-    console.error('Error parsing resultSkill:', error);
-    resumeSkill = {
-      featuredSkills: [],
-      descriptions: [],
-    };
-  }
-} else {
-  console.error('Invalid resultSkill format:', resultSkill);
-  resumeSkill = {
-    featuredSkills: [],
-    descriptions: [],
-  };
-}
-        
     
-    
+    // console.log("Projects");
     let projectWP = await this.projectService.getProjectById(userId);
-    console.log(projectWP)
-    const proDescription : string[] = projectWP.data.descriptions;
-    let resumeProject: ResumeProject={
-      project: projectWP.data.name,
-      date: projectWP.data.date,
-      descriptions: proDescription,
-    };
+    let resultProj : Projects[] = projectWP.data
+    const projectToArray : ResumeProject[] = resultProj.map(proj=>{
+      const { date, descriptions, project } = proj;
+      return { date, descriptions, project };
+    })
+    // for(let i = 0; i<projectToArray.length; i++){
+    //   console.log(projectToArray[i])
+    // }
     
-    let resume = new ResumeDTO(null,resumeExperience,resumeEducation,resumeProject,resumeSkill,null);
+    let resume = new ResumeDTO(null,experienceToArray,educationToArray,projectToArray,skillsToArray,null);
     console.log(resume)
-    let resumes = this.mappingService.compare(jobDes,resume)
+    let resumes = this.mappingService.compare(jobDes,resume,userId)
   return resumes;
-  return null;
+// return null;
   }
 
 

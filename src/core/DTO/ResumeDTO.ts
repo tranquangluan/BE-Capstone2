@@ -11,21 +11,21 @@ export class ResumeDTO {
   @ValidateNested()
   projects: ResumeProject[];
   @ValidateNested()
-  skills: ResumeSkills;
+  skills: ResumeSkills[];
   @ValidateNested()
   custom: ResumeCustom;
   constructor(
     profile: ResumeProfile,
-    workExperiences: ResumeWorkExperience,
-    educations: ResumeEducation,
-    projects: ResumeProject,
-    skills: ResumeSkills,
+    workExperiences: ResumeWorkExperience[],
+    educations: ResumeEducation[],
+    projects: ResumeProject[],
+    skills: ResumeSkills[],
     custom: ResumeCustom,
   ) {
     this.profile = profile;
-    this.workExperiences = [workExperiences];
-    this.educations = [educations];
-    this.projects = [projects];
+    this.workExperiences = workExperiences;
+    this.educations = educations;
+    this.projects = projects;
     this.skills = skills;
     this.custom = custom;
   }

@@ -12,5 +12,6 @@ export class Experiences{
   descriptions: string[];
   @Column({name:'jobTitle', nullable:false})
   jobTitle: string;
-
+  @Column({name:'uid', nullable:false})
+  uid: string;
 }

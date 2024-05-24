@@ -20,21 +20,44 @@ export class ExperienceService{
     }
 
 
-    async getExperienceById(id: string): Promise<CoreApiResponse<Experiences>>{
+    // async getExperienceById(id: string): Promise<CoreApiResponse<Experiences>>{
 
+    //     try{
+    //         const experienceDoc = await admin.firestore().collection('Experiences').doc(id).get();
+    //         if(!experienceDoc.exists){
+    //             new Error('Experience not found!!!')
+    //         }
+    //         const experience : Experiences =  {
+    //             ...experienceDoc.data(),
+    //         }as Experiences;
+    //         return CoreApiResponse.success(experience);
+    //     }catch(error){
+    //         return CoreApiResponse.error(500, error.message);
+    //     }
+    // }
+    async getExperienceById(userId: string): Promise<CoreApiResponse<Experiences[]>>{
         try{
-            const experienceDoc = await admin.firestore().collection('Experiences').doc(id).get();
-            if(!experienceDoc.exists){
-                new Error('Experience not found!!!')
+            const experienceDocs = await this.getAllExperiences();
+            const experiences: Experiences[] = [];
+
+            for (const experienceDoc of experienceDocs) {
+              if (experienceDoc.uid === userId) {
+                const education: Experiences = {
+                  ...experienceDoc,
+                } as Experiences;
+                experiences.push(education);
+              }
             }
-            const experience : Experiences =  {
-                ...experienceDoc.data(),
-            }as Experiences;
-            return CoreApiResponse.success(experience);
-        }catch(error){
+        
+            if (experiences.length === 0) {
+              throw new Error('Education not found!!!');
+            }
+        
+            return CoreApiResponse.success(experiences);
+          } catch (error) {
             return CoreApiResponse.error(500, error.message);
+          }
         }
-    }
 
     async createExperience(experience: Partial<Experiences>): Promise<Experiences> {
         const experienceCollection = admin.firestore().collection('Experiences');

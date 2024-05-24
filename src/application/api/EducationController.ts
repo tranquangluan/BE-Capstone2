@@ -18,15 +18,15 @@ import { CoreApiResponse } from 'src/core/common/api/CoreApiResponse';
 @ApiTags("educations")
 export class EducationController{
     constructor(private readonly educationService: EducationService){}
-    @Get()
-    async getAllEducations(): Promise<CoreApiResponse<Education[]>>{
-        return this.educationService.getAllEducations();
-    }
+    // @Get()
+    // async getAllEducations(): Promise<CoreApiResponse<Education[]>>{
+    //     return this.educationService.getAllEducations();
+    // }
 
-    @Get(':id')
-    async getEducationById(@Param('id') id: string): Promise<CoreApiResponse<Education>>{
-        return this.educationService.getEducationById(id);
-    }
+    // @Get(':id')
+    // async getEducationById(@Param('id') id: string): Promise<CoreApiResponse<Education>>{
+    //     return this.educationService.getEducationById(id);
+    // }
     // @Get(':id')
     // async getEducationById(@Param('id') id: string): Promise<Education>{
     //     return this.educationService.getEducationById(id);

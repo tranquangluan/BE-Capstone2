@@ -12,6 +12,8 @@ export class Education{
   gpa: string;
   @Column({name:'school', nullable:false})
   school: string;
-  @Column({name:'description', nullable:false})
+  @Column({name:'descriptions', nullable:false})
   descriptions: string[];
+  @Column({name:'uid', nullable:false})
+  uid: string;
 }

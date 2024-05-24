@@ -20,20 +20,29 @@ export class SkillService{
     }
 
 
-    async getSkillById(id: string): Promise<CoreApiResponse<Skills>>{
+    async getSkillById(userId: string): Promise<CoreApiResponse<Skills[]>>{
         try{
-            const skillDoc = await admin.firestore().collection('Skills').doc(id).get();
-            if(!skillDoc.exists){
-                new Error('Skill not found!!!')
+            const skillDocs = await this.getAllSkills();
+            const skills: Skills[] = [];
+
+            for (const skillDoc of skillDocs) {
+              if (skillDoc.uid === userId) {
+                const skill: Skills = {
+                  ...skillDoc,
+                } as Skills;
+                skills.push(skill);
+              }
             }
-            const skills : Skills =  {
-                ...skillDoc.data(),
-            }as Skills;
+        
+            if (skills.length === 0) {
+              throw new Error('Education not found!!!');
+            }
+        
             return CoreApiResponse.success(skills);
-        }catch(error){
+          } catch (error) {
             return CoreApiResponse.error(500, error.message);
+          }
         }
-    }
 
     async createSkill(skill: Partial<Skills>): Promise<Skills> {
         const skillCollection = admin.firestore().collection('Skills');
