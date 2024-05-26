@@ -69,18 +69,18 @@ export class MappingService {
         const matchedSkill = await this.findMatching(jobSkill, JSON.stringify(resumeSkill),promptSkill);
         const matchedEdu = await this.findMatching(jobEducation, JSON.stringify(resumeEdu),promptEdu);
         const matchedProj = await this.mappingProject(jd, JSON.stringify(resumeProjects),promptProj);
-        console.log("Exp" + matchedExp)
+        // console.log("Exp" + matchedExp)
         console.log("Skill" + matchedSkill)
-        console.log("Edu" + matchedEdu)
-        console.log("Pro" + matchedProj)
+        // console.log("Edu" + matchedEdu)
+        // console.log("Pro" + matchedProj)
         const expAfter = await this.languageSerVice.cleanInputPromt(matchedExp)
         const skillAfter = await this.languageSerVice.cleanInputPromt(matchedSkill)
         const eduAfter = await this.languageSerVice.cleanInputPromt(matchedEdu)
         const projAfter = await this.languageSerVice.cleanInputPromt(matchedProj)
-        console.log("Exp" + expAfter)
+        // console.log("Exp" + expAfter)
         console.log("Skill" + skillAfter)
-        console.log("Edu" + eduAfter)
-        console.log("Pro" + projAfter)
+        // console.log("Edu" + eduAfter)
+        // console.log("Pro" + projAfter)
        
         try {
           const parsedExpData = JSON.parse(expAfter);
@@ -92,10 +92,10 @@ export class MappingService {
           const matchedEduResult: ResumeEducation = parsedEduData;
           const matchedProjResult: ResumeProject[] = parsedProjectData;
           
-          console.log(matchedExpResult);
+          // console.log(matchedExpResult);
           console.log(matchedSkillResult)
-          console.log(matchedEduResult);
-          console.log(matchedProjResult);
+          // console.log(matchedEduResult);
+          // console.log(matchedProjResult);
           const resumes : Resumes={
             Resume: {
               profile: null,

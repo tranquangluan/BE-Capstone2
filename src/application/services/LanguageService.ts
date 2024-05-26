@@ -115,7 +115,9 @@ export class LanguageService {
     try {
       const required = 'Dựa vào dữ liệu này:'
       + stringInput 
-      +' Nếu dữ liệu là một mảng rỗng thì trả về []. Nếu không, hãy loại bỏ tất cả các ký hiệu dư thừa ở đầu và ở cuối đoạn data như : ``` , ```json và giữ nguyên cấu trúc dữ liệu khi trả về. Tôi chỉ cần dữ liệu không cần xem tính toán'
+      // +' Nếu trường dữ liệu là một mảng, nếu là rỗng thì trả về [], nếu là trường bình thường không có dữ liệu thì trả về null và vẫn giữ nguyên cấu trúc. Nếu không, hãy loại bỏ tất cả các ký hiệu dư thừa ở đầu và ở cuối đoạn data như : ``` , ```json và giữ nguyên cấu trúc dữ liệu khi trả về. Tôi chỉ cần dữ liệu không cần xem tính toán'
+      +' Nếu trường dữ liệu là một mảng, nếu là rỗng thì trả về [], nếu là trường bình thường không có dữ liệu thì trả về null và vẫn giữ nguyên cấu trúc. Nếu không, hãy loại bỏ tất cả các ký hiệu dư thừa ở đầu và ở cuối đoạn data như : ``` , ```json và giữ nguyên cấu trúc dữ liệu khi trả về. Tôi chỉ cần dữ liệu không cần xem tính toán'
+
       const result = await this.googleAiService.generateGeminiPro(required)
       return result;
     } catch (error) {
