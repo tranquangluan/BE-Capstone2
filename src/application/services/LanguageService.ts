@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GoogleAiService } from './GoogleAiService';
 import { JobDescriptionDTO } from 'src/core/DTO/JobDescriptionDTO';
-import { ResumeDTO } from 'src/core/DTO/ResumeDTO';
 import { RedisService } from './RedisService';
-import { CoreApiResponse } from 'src/core/common/api/CoreApiResponse';
-import { json } from 'stream/consumers';
 
 @Injectable()
 export class LanguageService {
@@ -42,7 +39,7 @@ export class LanguageService {
         json.personalQualities,
       );
     } catch (error) {
-      throw new Error(`Failed to convert JD to DTO: ${error.message}`);
+      throw new Error(`Không thể convert JD to DTO: ${error.message}`);
     }
     console.log(jobDescription)
     const language = await this.detectLanguage(content);
@@ -69,24 +66,19 @@ export class LanguageService {
     if (prompt.length !== 0) {
       result = await this.googleAiService.generateGeminiPro(prompt);
     } else {
-      return 'Your language is not supported in this version!';
+      return 'Ngôn ngữ của bạn không được hỗ trợ trong phiên bản này!';
     }
     return result;
   }
 
   
-  // Get all languages code base on ISO-639-1
   public async getAllLanguages(): Promise<string[]> {
     const ISO6391 = require('iso-639-1');
     const myArray: string[] = ISO6391.getAllCodes();
     return myArray;
   }
 
-  // public async preProcessJD(contentJD: string): Promise<string> {
-  //   let prompt = `Hãy xử lý loại bỏ các ký từ thừa và trả về một đoạn văn xuôi từ dữ liệu sau ${contentJD}`;
-  //   const result = await this.googleAiService.generateGeminiPro(prompt);
-  //   return result;
-  // }
+  
   public async preProcessJD(contentJD: string): Promise<string> {
     let prompt = `Hãy chỉ xử lý loại bỏ các ký tự thừa và trả về một đoạn văn xuôi từ dữ liệu sau ${contentJD}`;
     const result = await this.googleAiService.generateGeminiPro(prompt);
@@ -108,20 +100,22 @@ export class LanguageService {
       this.redisService.setObject("User".concat(userId), contentJD);
       return jobDescription;
     } catch (error) {
-      throw new Error(`Failed to convert JD to DTO: ${error.message}`);
+      throw new Error(`Không thể convert JD to DTO: ${error.message}`);
     }
   }
   public async cleanInputPromt(stringInput: string,): Promise<string> {
     try {
       const required = 'Dựa vào dữ liệu này:'
       + stringInput 
-      // +' Nếu trường dữ liệu là một mảng, nếu là rỗng thì trả về [], nếu là trường bình thường không có dữ liệu thì trả về null và vẫn giữ nguyên cấu trúc. Nếu không, hãy loại bỏ tất cả các ký hiệu dư thừa ở đầu và ở cuối đoạn data như : ``` , ```json và giữ nguyên cấu trúc dữ liệu khi trả về. Tôi chỉ cần dữ liệu không cần xem tính toán'
-      +' Nếu trường dữ liệu là một mảng, nếu là rỗng thì trả về [], nếu là trường bình thường không có dữ liệu thì trả về null và vẫn giữ nguyên cấu trúc. Nếu không, hãy loại bỏ tất cả các ký hiệu dư thừa ở đầu và ở cuối đoạn data như : ``` , ```json và giữ nguyên cấu trúc dữ liệu khi trả về. Tôi chỉ cần dữ liệu không cần xem tính toán'
-
+      +' . Và thực hiện theo những yêu cầu sau:'
+      +' 1. Nếu dữ liệu là [] thì trả về []. Nếu không thì làm việc tiếp theo'
+      +' 2. Hãy loại bỏ tất cả các ký hiệu dư thừa ở đầu và ở cuối đoạn data như : ``` , ```json.'
+      +' 3. Nếu là dữ liệu thì giữ nguyên cấu trúc dữ liệu lúc đầu và trả về kể cả các trường không có dữ liệu. Tôi chỉ cần dữ liệu không cần xem tính toán'
+      +' 4. Tôi chỉ cần dữ liệu trả về và đừng nói gì thêm.'
       const result = await this.googleAiService.generateGeminiPro(required)
       return result;
     } catch (error) {
-      throw new Error(`Failed to clean input data: ${error.message}`);
+      throw new Error(`Không thể làm sạch dữ liệu đầu vào: ${error.message}`);
     }
   }
 
