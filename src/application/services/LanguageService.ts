@@ -107,9 +107,10 @@ export class LanguageService {
       const required = 'Dựa vào dữ liệu này:'
       + stringInput 
       +' . Hãy thực hiện theo những yêu cầu sau đây:'
-      +' 1. Giữ nguyên tất cả các trường kể cả các trường của dữ liệu đầu vào kể cả mang dữ liệu là [] và null.'
-      +' 2. Hãy loại bỏ tất cả các ký hiệu dư thừa ở đầu và ở cuối dữ liệu như : ``` , ```json.'
-      +' 3. Tôi chỉ cần dữ liệu trả về và đừng nói gì thêm.'
+      +' 1. Giữ nguyên cấu trúc của dữ liệu nếu là mảng thì giữ nguyên mảng, nếu là object thì giữ nguyên object.'
+      +' 2. Giữ nguyên tất cả các trường của dữ liệu đầu vào kể cả mang dữ liệu là [] và null.'
+      +' 3. Hãy loại bỏ tất cả các ký hiệu dư thừa ở đầu và ở cuối dữ liệu như : ``` , ```json.'
+      +' 4. Tôi chỉ cần dữ liệu trả về và đừng nói gì thêm.'
       const result = await this.googleAiService.generateGeminiPro(required)
       return result;
     } catch (error) {
