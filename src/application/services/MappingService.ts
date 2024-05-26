@@ -46,13 +46,13 @@ export class MappingService {
       ' [{"school":"Trường tiểu học, trung học cơ sở, trung học phổ thông, cao đẳng, đại học, ..." , "degree": "bằng cấp, chứng chỉ " , "date": "ngày cấp bằng học tập, chứng chỉ" ,"gpa": "điểm học tập" ,"descriptions" :"mô tả, datatype là string[]"},],.' +
       ' . Và thực hiện theo yêu cầu sau. Tôi chỉ trả ra kết quả, không cần quá trình:' +
       ' Trường hợp 1: Nếu hồ sơ năng lực không có dữ liệu thì trả về cấu trúc mảng như sau: [{"school": null , "degree": null,"date": null,"gpa":null ,"descriptions" :[]},],.' +
-      ' Trường hợp 2: Nếu job description không yêu cầu, không đề cập đến bằng cấp (undefined) thì trả về bằng cấp cao nhất trong hồ sơ năng lực theo cấu trúc: [{"school":"trường học" , "degree": "bằng cấp ","date":"ngày cấp bằng học tập, chứng chỉ" ,"gpa": "điểm học tập" ,"descriptions" :"mô tả, datatype là string[]"},],.';
+      ' Trường hợp 2: Nếu job description không yêu cầu, không đề cập đến bằng cấp (undefined) thì trả về bằng cấp cao nhất trong hồ sơ năng lực theo cấu trúc: [{"school":"trường học" , "degree": "bằng cấp ","date":"ngày cấp bằng học tập, chứng chỉ" ,"gpa": "điểm học tập" ,"descriptions" :"mô tả, datatype là string[]"},],.'
     const promptExp =
       'Và trả ra kết quả là 1 mảng theo cấu trúc hoàn toàn giống như sau và không dư thừa gì khác. Phải trả về đủ trường "company","jobTitle","date","descriptions":' +
       ' [{"company": "Tên công ty", "jobTitle": "tên công việc làm tại công ty tương ứng","date": "ngày bắt đầu làm việc","descriptions":"mô tả, datatype là string[]",},{data thứ 2 nếu có},],.' +
       ' . Và thực hiện theo yêu cầu sau. Tôi chỉ trả ra kết quả, không cần quá trình:' +
-      ' Trường hợp 1: Nếu hồ sơ năng lực không có dữ liệu thì trả về đúng cấu trúc mảng như sau: [{"company": null, "jobTitle": null,"date": null,"descriptions":"[]",}],.';
-    +' Trường hợp 2: Nếu có dữ liệu thích hợp trả về dữ liệu bình thường theo cấu trúc sau:[{"company": "Tên công ty", "jobTitle": "tên công việc làm tại công ty tương ứng","date": "ngày bắt đầu làm việc","descriptions":"mô tả, datatype là string[]",},{data thứ 2 nếu có},],.';
+      ' Trường hợp 1: Nếu hồ sơ năng lực không có dữ liệu thì trả về đúng cấu trúc mảng như sau: [{"company": null, "jobTitle": null,"date": null,"descriptions":"[]",}],.' +
+      ' Trường hợp 2: Nếu có dữ liệu thích hợp trả về dữ liệu bình thường theo cấu trúc sau:[{"company": "Tên công ty", "jobTitle": "tên công việc làm tại công ty tương ứng","date": "ngày bắt đầu làm việc","descriptions":"mô tả, datatype là string[]",},{data thứ 2 nếu có},],.' 
     const promptSkill =
       'Và trả ra kết quả theo cấu trúc hoàn toàn giống như sau và không dư thừa gì khác. Phải trả dữ liệu về đủ 2 trường là "featuredSkills" và "descriptions":' +
       ' {"featuredSkills":"[] đây luôn luôn là mảng rỗng" , "descriptions":"[] datatype là string[]"},.' +
@@ -62,13 +62,13 @@ export class MappingService {
       ' 3. Trường "descriptions" phải ưu tiên tuyệt đối những kỹ năng chuyên ngành mà job description yêu cầu. Ví dụ yêu cầu là 5 năm kinh nghiệm ngôn ngữ java nhưng hồ sơ năng lực lại có 7 năm c#, 3 năm java, 5 năm php. phải lấy ra được 3 năm kinh nghiệm java. ' +
       ' Ví dụ cụ thể:' +
       ' Trường hợp 1: Nếu hồ sơ năng lực không có dữ liệu nào thích hợp thì trả về đúng cấu trúc: {"featuredSkills":"[]" , "descriptions":"[]",}.' +
-      ' Trường hợp 2: Nếu có dữ liệu thích hợp trả về dữ liệu bình thường theo cấu trúc sau:{"featuredSkills":"[] đây luôn luôn là mảng rỗng" , "descriptions":"[] datatype là string[]"}.';
+      ' Trường hợp 2: Nếu có dữ liệu thích hợp trả về dữ liệu bình thường theo cấu trúc sau:{"featuredSkills":"[] đây luôn luôn là mảng rỗng" , "descriptions":"[] datatype là string[]"}.'
     const promptProj =
       'Và trả ra kết quả là 1 mảng theo cấu trúc hoàn toàn giống như sau và không dư thừa gì khác. Phải trả về đủ trường "project","date","descriptions":' +
       ' [{"project":"Dự án đã làm trong quá trình làm việc" ,"date":"thời gian làm dự án" ,"descriptions": "mô tả, datatype là string[]"},{dữ liệu thứ 2 nếu có}],.' +
       ' . Và thực hiện theo yêu cầu sau. Tôi chỉ trả ra kết quả, không cần quá trình:' +
-      ' Trường hợp 1: Nếu không tìm thấy dữ liệu nào thích hợp thì trả về dữ liệu theo đúng cấu trúc: [{"project": "null" ,"date": "null" ,"descriptions": "[]"},].' +
-      ' Trường hợp 2: Nếu hồ sơ năng lực có dữ liệu thích hợp, ưu tiên lấy 2 đến 3 project có thời gian gần với hiện tại nhất(so sánh bằng date) và trả về theo cấu trúc: [{"project":"Dự án đã làm trong quá trình làm việc" ,"date":"thời gian làm dự án" ,"descriptions": "mô tả, datatype là string[]"},{dữ liệu thứ 2 nếu có}].';
+      ' Trường hợp 1: Nếu không tìm thấy dữ liệu nào thích hợp thì trả về dữ liệu theo đúng cấu trúc: [{"project": null ,"date": null ,"descriptions": []},].' +
+      ' Trường hợp 2: Nếu hồ sơ năng lực có dữ liệu thích hợp, ưu tiên lấy 2 đến 3 project có thời gian gần với hiện tại nhất(so sánh bằng date) và trả về theo cấu trúc: [{"project":"Dự án đã làm trong quá trình làm việc" ,"date":"thời gian làm dự án" ,"descriptions": "mô tả, datatype là string[]"},{dữ liệu thứ 2 nếu có}].'
 
     const matchedExp = await this.findMatching(
       jobExp,
