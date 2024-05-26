@@ -17,6 +17,9 @@ export class EducationService{
             }as Education;
             educations.push(education);
         });
+        if (educations.length === 0) {
+          throw new Error('Education not found in firebase!!!');
+        }
         return educations;
         }catch(error){
             return error.message;
@@ -39,30 +42,14 @@ export class EducationService{
             }
         
             if (educations.length === 0) {
-              throw new Error('Education not found!!!');
+              throw new Error('This User do not have any Education!!!');
             }
         
             return CoreApiResponse.success(educations);
           } catch (error) {
             return CoreApiResponse.error(500, error.message);
           }
-        }
-
-    // async getEducationById(id: string): Promise<Education>{
-    //     try{
-    //         const educationDoc = await admin.firestore().collection('Education').doc(id).get();
-    //     if(!educationDoc.exists){
-    //         throw new Error('Education not found!!!')
-    //     }
-    //     const education : Education = {
-    //         ...educationDoc.data(),
-    //     }as Education;
-    //     console.log(education);
-    //     return education;
-    //     }catch(error){
-    //         return error;
-    //     }
-    // }
+    }
 
     async createEducation(education: Partial<Education>): Promise<CoreApiResponse<Education>> {
         try{
@@ -78,16 +65,8 @@ export class EducationService{
             return CoreApiResponse.error(500, error.message);
         }
         
-      }
-    // async createEducation(education: Partial<Education>): Promise<Education> {
-    //     const educationDocRef = admin.firestore().collection('Education').doc();
-    //     await educationDocRef.set(education);
-    //     const createEducation = await educationDocRef.get();
-    //     return {
-    //     //   id: createEducation.id,
-    //       ...createEducation.data(),
-    //     } as Education;
-    //   }
+    }
+   
     async updateEducation(id: string, education: Partial<Education>): Promise<CoreApiResponse<Education>> {
         try{
             const educationDocRef = admin.firestore().collection('Education').doc(id);

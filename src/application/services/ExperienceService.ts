@@ -16,6 +16,9 @@ export class ExperienceService{
             }as Experiences;
             experiences.push(experience);
         });
+        if (experiences.length === 0) {
+          throw new Error('Experience not found in firebase!!!');
+        }
         return experiences;
     }
 
@@ -50,7 +53,7 @@ export class ExperienceService{
             }
         
             if (experiences.length === 0) {
-              throw new Error('Education not found!!!');
+              throw new Error('This User do not have any Experience!!!');
             }
         
             return CoreApiResponse.success(experiences);

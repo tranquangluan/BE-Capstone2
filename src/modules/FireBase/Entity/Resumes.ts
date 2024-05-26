@@ -16,13 +16,6 @@ export class Resumes{
     this.Resume = Resume;
     this.Settings = Settings;
   };
-  // constructor(
-  //   Resume: Resume,
-  
-  // ) {
-  //   this.Resume = Resume;
-    
-  // }
 }
 
 

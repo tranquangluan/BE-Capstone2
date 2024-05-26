@@ -16,6 +16,9 @@ export class ProjectService{
             }as Projects;
             projects.push(project);
         });
+        if (projects.length === 0) {
+          throw new Error('Project not found in firebase!!!');
+        }
         return projects;
     }
 
@@ -35,7 +38,7 @@ export class ProjectService{
             }
         
             if (projects.length === 0) {
-              throw new Error('Education not found!!!');
+              throw new Error('This User do not have any project!!!');
             }
         
             return CoreApiResponse.success(projects);

@@ -82,8 +82,13 @@ export class LanguageService {
     return myArray;
   }
 
+  // public async preProcessJD(contentJD: string): Promise<string> {
+  //   let prompt = `Hãy xử lý loại bỏ các ký từ thừa và trả về một đoạn văn xuôi từ dữ liệu sau ${contentJD}`;
+  //   const result = await this.googleAiService.generateGeminiPro(prompt);
+  //   return result;
+  // }
   public async preProcessJD(contentJD: string): Promise<string> {
-    let prompt = `Hãy xử lý loại bỏ các ký từ thừa và trả về một đoạn văn xuôi từ dữ liệu sau ${contentJD}`;
+    let prompt = `Hãy chỉ xử lý loại bỏ các ký tự thừa và trả về một đoạn văn xuôi từ dữ liệu sau ${contentJD}`;
     const result = await this.googleAiService.generateGeminiPro(prompt);
     return result;
   }
@@ -110,9 +115,8 @@ export class LanguageService {
     try {
       const required = 'Dựa vào dữ liệu này:'
       + stringInput 
-      +' Nếu dữ liệu là một mảng rỗng thì trả về []. Nếu không, hãy loại bỏ tất cả các ký hiệu dư thừa ở đầu và ở cuối đoạn data như : ``` , ```json. Tôi chỉ cần dữ liệu không cần xem tính toán'
+      +' Nếu dữ liệu là một mảng rỗng thì trả về []. Nếu không, hãy loại bỏ tất cả các ký hiệu dư thừa ở đầu và ở cuối đoạn data như : ``` , ```json và giữ nguyên cấu trúc dữ liệu khi trả về. Tôi chỉ cần dữ liệu không cần xem tính toán'
       const result = await this.googleAiService.generateGeminiPro(required)
-      console.log(result)
       return result;
     } catch (error) {
       throw new Error(`Failed to clean input data: ${error.message}`);

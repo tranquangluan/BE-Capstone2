@@ -34,7 +34,6 @@ export class ResumeService{
         const experienceRef = await experienceCollection.add(experience);
         const createExperience = await experienceRef.get();
         return {
-        //   id: educationRef.id,
           ...createExperience.data(),
         } as Resumes;
       }
@@ -44,7 +43,6 @@ export class ResumeService{
         await experienceDocRef.update(experience);
         const updatedExperience = await experienceDocRef.get();
         return{
-            // id: updatedEducation.id,
             ...updatedExperience.data(),
         }as Resumes;
     }

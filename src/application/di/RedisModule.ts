@@ -6,7 +6,7 @@ import { RedisService } from '../services/RedisService';
 import { GoogleAiModule } from './GoogleAiModule';
 @Module({
   imports: [
-    forwardRef(() => GoogleAiModule), // Sử dụng forwardRef để giải quyết vòng phụ thuộc
+    forwardRef(() => GoogleAiModule), 
     CacheModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

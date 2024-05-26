@@ -1,6 +1,6 @@
 // src/dtos/check-string.dto.ts
 
-import { IsString, IsArray, ValidateNested } from 'class-validator';
+import { IsString, ValidateNested } from 'class-validator';
 
 export class JobDescriptionDTO {
   @IsString()

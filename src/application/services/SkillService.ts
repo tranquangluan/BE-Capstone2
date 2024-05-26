@@ -16,6 +16,9 @@ export class SkillService{
             }as Skills;
             skills.push(skill);
         });
+        if (skills.length === 0) {
+          throw new Error('Skills not found in firebase!!!');
+        }
         return skills;
     }
 
@@ -35,7 +38,7 @@ export class SkillService{
             }
         
             if (skills.length === 0) {
-              throw new Error('Education not found!!!');
+              throw new Error('This User do not have any skill!!!');
             }
         
             return CoreApiResponse.success(skills);
