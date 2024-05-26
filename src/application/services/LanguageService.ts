@@ -9,7 +9,6 @@ export class LanguageService {
     private readonly googleAiService: GoogleAiService,
     private readonly redisService: RedisService,
   ) {}
-
   public async detectLanguage(content: string): Promise<string> {
     const prompt = `Hãy xác định mã ngôn ngữ từ đoạn văn và trả về dữ liệu dựa vào tiêu chuẩn mã ngôn ngữ ISO 639. Ví dụ như Tiếng Việt sẽ là vi \n"${content}"`;
     const result = await this.googleAiService.generateGeminiPro(prompt);
@@ -107,11 +106,10 @@ export class LanguageService {
     try {
       const required = 'Dựa vào dữ liệu này:'
       + stringInput 
-      +' . Và thực hiện theo những yêu cầu sau:'
-      +' 1. Nếu dữ liệu là [] thì trả về []. Nếu không thì làm việc tiếp theo'
-      +' 2. Hãy loại bỏ tất cả các ký hiệu dư thừa ở đầu và ở cuối đoạn data như : ``` , ```json.'
-      +' 3. Nếu là dữ liệu thì giữ nguyên cấu trúc dữ liệu lúc đầu và trả về kể cả các trường không có dữ liệu. Tôi chỉ cần dữ liệu không cần xem tính toán'
-      +' 4. Tôi chỉ cần dữ liệu trả về và đừng nói gì thêm.'
+      +' . Hãy thực hiện theo những yêu cầu sau đây:'
+      +' 1. Giữ nguyên tất cả các trường kể cả các trường của dữ liệu đầu vào kể cả mang dữ liệu là [] và null.'
+      +' 2. Hãy loại bỏ tất cả các ký hiệu dư thừa ở đầu và ở cuối dữ liệu như : ``` , ```json.'
+      +' 3. Tôi chỉ cần dữ liệu trả về và đừng nói gì thêm.'
       const result = await this.googleAiService.generateGeminiPro(required)
       return result;
     } catch (error) {

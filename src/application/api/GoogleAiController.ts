@@ -105,40 +105,30 @@ export class GoogleAiController {
       throw new NotFoundException('Job description not found because redis died or not exist User in redis');
     }
     const jobDesString = await this.redisService.getObject("User".concat(userId))
-    
     let eduWP = await this.educationService.getEducationById(userId);
     let resultEdu : Education[] = eduWP.data || []
     const educationToArray : ResumeEducation[] = resultEdu?.map(edu=>{
       const { date, degree, school, gpa, descriptions } = edu;
       return { date, degree, school, gpa, descriptions };
     }) || []
-    
-    
     let expWP = await this.experienceService.getExperienceById(userId);
-    
     let resultExp : Experiences[] = expWP.data
     const experienceToArray : ResumeWorkExperience[] = resultExp?.map(exp=>{
       const { date, company, jobTitle, descriptions } = exp;
       return { date, company, jobTitle, descriptions };
     }) || []
-    
     let skillWP = await this.skillService.getSkillById(userId);
     let resultSkill : Skills[] = skillWP.data || []
     const skillsToArray: ResumeSkills[] = resultSkill?.map(skill => {
       const { descriptions} = skill;
       return { featuredSkills: [], descriptions};
     }) || []
-    
-
-    
     let projectWP = await this.projectService.getProjectById(userId);
     let resultProj : Projects[] = projectWP.data || []
     const projectToArray : ResumeProject[] = resultProj?.map(proj=>{
       const { date, descriptions, project } = proj;
       return { date, descriptions, project };
     }) || []
-    
-    
     let resume = new ResumeDTO(null,experienceToArray,educationToArray,projectToArray,skillsToArray,null);
     // console.log(resume)
     let resumes : Resumes = await this.mappingService.compare(jobDes,resume,userId,jobDesString)

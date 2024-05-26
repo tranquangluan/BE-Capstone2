@@ -4,7 +4,7 @@ import {Entity, PrimaryGeneratedColumn , Column, Double} from 'typeorm';
 export class Projects{
   @Column({name:'date', nullable:false})
   date: string;
-  @Column({name:'description', nullable:false})
+  @Column({name:'descriptions', nullable:false})
   descriptions: string[];
   @Column({name:'project', nullable:false})
   project: string;
