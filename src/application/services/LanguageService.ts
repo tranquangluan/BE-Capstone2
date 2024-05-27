@@ -9,11 +9,20 @@ export class LanguageService {
     private readonly googleAiService: GoogleAiService,
     private readonly redisService: RedisService,
   ) {}
+  public async cleanString(input: string):  Promise<string> {
+    // Sử dụng biểu thức chính quy để loại bỏ các dấu xuống dòng và khoảng trắng thừa
+    return input.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+  }
   public async detectLanguage(content: string): Promise<string> {
-    const prompt = `Hãy xác định mã ngôn ngữ từ đoạn văn và trả về dữ liệu dựa vào tiêu chuẩn mã ngôn ngữ ISO 639. Ví dụ như Tiếng Việt sẽ là vi \n"${content}"`;
+    const cleanText = await this.cleanString(content);
+    console.log(cleanText);
+    
+    const prompt = `Hãy xác định mã ngôn ngữ từ đoạn văn và trả về dữ liệu dựa vào tiêu chuẩn mã ngôn ngữ ISO 639-1. Ví dụ như Tiếng Việt sẽ là vi, Tiếng anh sẽ là en. "${cleanText}"`;
     const result = await this.googleAiService.generateGeminiPro(prompt);
     const myArray = this.getAllLanguages();
     const sliced = result.substring(0, 2);
+    console.log(sliced);
+    
     if ((await myArray).includes(sliced)) {
       return sliced;
     }
@@ -24,8 +33,12 @@ export class LanguageService {
     if (typeof rs !== 'undefined') {
     }
   }
-  public async rewrite(userId: string,title: string,labelName: string,content: string,): Promise<string> {
+  public async rewrite(userId: string,title: string,labelName: string,content: string): Promise<string> {
+    console.log(userId);
+    
     const JD = await this.redisService.getObject(userId);
+    console.log(JD);
+    
     let jobDescription;
     try {
       const json = JSON.parse(JD);

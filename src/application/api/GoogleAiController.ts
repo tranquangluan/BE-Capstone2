@@ -40,9 +40,11 @@ export class GoogleAiController {
   public async generateGeminiPro1(
     @Body() jobDescriptionInputDTO: JobDescriptionInputDTO
   ): Promise<CoreApiResponse<JobDescriptionDTO>> {
+    console.log(jobDescriptionInputDTO.jobDescription);
+    
     let language = await this.languageService.detectLanguage(jobDescriptionInputDTO.jobDescription);
     let require =
-      'Hãy dựa vào thông tin này hãy rút gọn nội dung và vui lòng cung cấp với các trường có nội dung như sau: {"JobTitle": "Tên của vị trí công việc","JobObjective": "Công việc mà doanh nghiệp mô tả","Educations": "Yêu cầu về học vấn của doanh nghiệp, nếu không có trả về []","Skills": "Danh sách kỹ năng cần thiết, datatype là string[]","Experience": "Yêu cầu về kinh nghiệm, datatype là string[]","PersonalQualities": "Các phẩm chất doanh nghiệp mong muốn, datatype là string[]"} với Skills, Educations và PersonalQualities được trả về dưới dạng mảng nếu không có dữ liệu thì trả về mảng rỗng, nếu trường nào không có dữ liệu thì mang giá trị null. Dự đoán giá trị của các trường null và trả về giá trị đó';
+      'Hãy dựa vào thông tin này hãy rút gọn nội dung và vui lòng cung cấp với các trường có nội dung như sau: {"JobTitle": "Tên công việc","JobObjective": "Công việc mà doanh nghiệp mô tả","Educations": "Yêu cầu về học vấn của doanh nghiệp, nếu không có trả về []","Skills": "Danh sách kỹ năng cần thiết, datatype là string[]","Experience": "Yêu cầu về năm kinh nghiệm, datatype là string[]","PersonalQualities": "Các phẩm chất doanh nghiệp mong muốn, datatype là string[]"} với Skills, Educations và PersonalQualities được trả về dưới dạng mảng nếu không có dữ liệu thì trả về mảng rỗng, nếu trường nào không có dữ liệu thì mang giá trị null. Dự đoán giá trị của các trường null và trả về giá trị đó';
     let afterProcessJD = await this.languageService.preProcessJD(jobDescriptionInputDTO.jobDescription);
     let final = require.concat(afterProcessJD);
     console.log(language);
