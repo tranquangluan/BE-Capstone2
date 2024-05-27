@@ -4,6 +4,7 @@ import { JobDescriptionDTO } from 'src/core/DTO/JobDescriptionDTO';
 import { ResumeDTO } from 'src/core/DTO/ResumeDTO';
 import { ResumeEducation, ResumeProject, ResumeSkills, ResumeWorkExperience, Resumes } from 'src/modules/FireBase/Entity/Resumes';
 import { LanguageService } from './LanguageService';
+import { CoreApiResponse } from 'src/core/common/api/CoreApiResponse';
 @Injectable()
 export class MappingService {
   constructor(
@@ -29,6 +30,9 @@ export class MappingService {
     const jobExp = afterJDConverted.experience;
     const jobSkill = afterJDConverted.skills;
     const jobEducation = afterJDConverted.educations;
+    const jobTitle = afterJDConverted.jobTitle;
+    const jobObjective = afterJDConverted.jobObjective;
+    
     const resumeExp = resume.workExperiences;
     const resumeSkill = resume.skills;
     const resumeEdu = resume.educations;
@@ -41,10 +45,10 @@ export class MappingService {
       ' Trường hợp 2: Nếu job description không yêu cầu, không đề cập đến bằng cấp (undefined) thì trả về bằng cấp cao nhất trong hồ sơ năng lực theo cấu trúc: [{"school":"trường học" , "degree": "bằng cấp ","date":"ngày cấp bằng học tập, chứng chỉ" ,"gpa": "điểm học tập" ,"descriptions" :"mô tả, datatype là string[]"},],.'
     const promptExp =
       'Và trả ra kết quả là 1 mảng theo cấu trúc hoàn toàn giống như sau và không dư thừa gì khác. Phải trả về đủ trường "company","jobTitle","date","descriptions":' +
-      ' [{"company": "Tên công ty", "jobTitle": "tên công việc làm tại công ty tương ứng","date": "ngày bắt đầu làm việc","descriptions":"mô tả, datatype là string[]",},{data thứ 2 nếu có},],.' +
+      ' [{"company": "Tên công ty", "jobTitle": "tên công việc làm tại công ty tương ứng","date": "ngày bắt đầu làm việc","descriptions":"mô tả, datatype là string[]",},{dữ liệu thứ 2 nếu có},{dữ liệu thứ 3 nếu có}],.' +
       ' . Và thực hiện theo yêu cầu sau. Tôi chỉ trả ra kết quả, không cần quá trình:' +
       ' Trường hợp 1: Nếu hồ sơ năng lực không có dữ liệu thì trả về đúng cấu trúc mảng như sau: [{"company": null, "jobTitle": null,"date": null,"descriptions":"[]",}],.' +
-      ' Trường hợp 2: Nếu có dữ liệu thích hợp trả về dữ liệu bình thường theo cấu trúc sau:[{"company": "Tên công ty", "jobTitle": "tên công việc làm tại công ty tương ứng","date": "ngày bắt đầu làm việc","descriptions":"mô tả, datatype là string[]",},{data thứ 2 nếu có},],.' 
+      ' Trường hợp 2: Nếu có dữ liệu thích hợp trả về dữ liệu bình thường theo cấu trúc sau:[{"company": "Tên công ty", "jobTitle": "tên công việc làm tại công ty tương ứng","date": "ngày bắt đầu làm việc","descriptions":"mô tả, datatype là string[]",},{dữ liệu thứ 2 nếu có},{dữ liệu thứ 3 nếu có},],.' 
     const promptSkill =
       'Và trả ra kết quả theo cấu trúc hoàn toàn giống như sau và không dư thừa gì khác. Phải trả dữ liệu về đủ 2 trường là "featuredSkills" và "descriptions":' +
       ' {"featuredSkills":"[] đây luôn luôn là mảng rỗng" , "descriptions":"[] datatype là string[]"},.' +
@@ -57,14 +61,15 @@ export class MappingService {
       ' Trường hợp 2: Nếu có dữ liệu thích hợp trả về dữ liệu bình thường theo cấu trúc sau:{"featuredSkills":"[] đây luôn luôn là mảng rỗng" , "descriptions":"[] datatype là string[]"}.'
     const promptProj =
       'Và trả ra kết quả là 1 mảng theo cấu trúc hoàn toàn giống như sau và không dư thừa gì khác. Phải trả về đủ trường "project","date","descriptions":' +
-      ' [{"project":"Dự án đã làm trong quá trình làm việc" ,"date":"thời gian làm dự án" ,"descriptions": "mô tả, datatype là string[]"},{dữ liệu thứ 2 nếu có}],.' +
+      ' [{"project":"Dự án đã làm trong quá trình làm việc" ,"date":"thời gian làm dự án" ,"descriptions": "mô tả, datatype là string[]"},{dữ liệu thứ 2 nếu có},{dữ liệu thứ 3 nếu có},],.' +
       ' . Và thực hiện theo yêu cầu sau. Tôi chỉ trả ra kết quả, không cần quá trình:' +
       ' Trường hợp 1: Nếu không tìm thấy dữ liệu nào thích hợp thì trả về dữ liệu theo đúng cấu trúc: [{"project": null ,"date": null ,"descriptions": []},].' +
       ' Trường hợp 2: Nếu hồ sơ năng lực có dữ liệu thích hợp, ưu tiên lấy 2 đến 3 project có thời gian gần với hiện tại nhất(so sánh bằng date) và trả về theo cấu trúc: [{"project":"Dự án đã làm trong quá trình làm việc" ,"date":"thời gian làm dự án" ,"descriptions": "mô tả, datatype là string[]"},{dữ liệu thứ 2 nếu có}].'
 
-    const matchedExp = await this.findMatching(
-      jobExp,
+    const matchedExp = await this.mappingExperience(
+      jobTitle+jobExp,
       JSON.stringify(resumeExp),
+      jobTitle,
       promptExp,
     );
     const matchedSkill = await this.findMatching(
@@ -80,6 +85,7 @@ export class MappingService {
     const matchedProj = await this.mappingProject(
       jd,
       JSON.stringify(resumeProjects),
+      jobObjective,
       promptProj,
     );
     console.log('======Đầu ra sau map========');
@@ -99,10 +105,10 @@ export class MappingService {
     console.log(eduAfter);
     console.log(projAfter);
     try {
-      const parsedExpData = JSON.parse(expAfter);
-      const parsedSkillData = JSON.parse(skillAfter);
-      const parsedEduData = JSON.parse(eduAfter);
-      const parsedProjectData = JSON.parse(projAfter);
+      const parsedExpData = JSON.parse(expAfter) as ResumeWorkExperience[];
+      const parsedSkillData = JSON.parse(skillAfter) as ResumeSkills;
+      const parsedEduData = JSON.parse(eduAfter) as ResumeEducation[];
+      const parsedProjectData = JSON.parse(projAfter) as ResumeProject[];
       const matchedExpResult: ResumeWorkExperience[] = parsedExpData;
       const matchedSkillResult: ResumeSkills = parsedSkillData;
       const matchedEduResult: ResumeEducation[] = parsedEduData;
@@ -127,7 +133,7 @@ export class MappingService {
       return resumes;
     } catch (error) {
       console.error('Lỗi xảy ra khi phân tích chuỗi JSON:', error);
-      throw new Error('Lỗi xảy ra khi phân tích chuỗi JSON');
+      CoreApiResponse.error(error)
     }
   }
 
@@ -137,11 +143,11 @@ export class MappingService {
     prompt: string,
   ): Promise<string> {
     let require =
-      'từ đầu vào là jobDescription từ doanh nghiệp như sau: ' +
+      ' Từ đầu vào là jobDescription từ doanh nghiệp như sau: ' +
       jobDescriptionField +
-      ' và dữ liệu từ hồ sơ năng lực của người dùng: ' +
+      '. Và dữ liệu từ hồ sơ năng lực của người dùng: ' +
       resumeField +
-      ' Dựa vào hồ sơ năng lực này, hãy tìm ra điểm giống nhau từ hồ sơ so với yêu cầu của doanh nghiệp, hãy lấy ra kết quả từ hồ sơ năng lực tuân theo jobDescription. ' +
+      '. Dựa vào hồ sơ năng lực này, hãy tìm ra điểm giống nhau từ hồ sơ so với yêu cầu của doanh nghiệp, hãy lấy ra kết quả từ hồ sơ năng lực tuân theo jobDescription. ' +
       prompt;
     const result = await this.googleAiService.generateGeminiPro(require);
     return result;
@@ -150,14 +156,36 @@ export class MappingService {
   async mappingProject(
     jobDescription: string | string[],
     resumeField: string,
+    jobObjective: string,
     prompt: string,
   ): Promise<string> {
     let require =
-      'từ đầu vào là jobDescription từ doanh nghiệp như sau: ' +
+      ' Từ đầu vào là jobDescription từ doanh nghiệp như sau: ' +
       jobDescription +
-      ' và dữ liệu từ hồ sơ năng lực của người dùng: ' +
+      '. JobDescription sau khi phân tích có nội dung jobObjective(nội dung công việc) như sau :' +
+      jobObjective + 
+      '. Và dữ liệu từ hồ sơ năng lực của người dùng: ' +
       resumeField +
-      ' hãy dựa theo đoạn mô tả yêu cầu của jobDescription từ doanh nghiệp, tìm những dự án (projects) phù hợp lấy từ trong hồ sơ năng lực và trả về kết quả. Nếu dữ liệu có nhiều hơn 3 dự án phù hợp thì chọn ra 3 dự án ưu tiên theo 2 tiêu chí: 1. Dự án lớn nhất, 2. Thời gian gần với hiện tại nhất. ' +
+      '. Hãy dựa theo đoạn mô tả yêu cầu của jobDescription và jobObjective từ doanh nghiệp, tìm những dự án (project) có descriptions phù hợp với jobDescription và jobObjective, lấy dữ liệu từ trong hồ sơ năng lực và trả về kết quả. Lấy ra nhiều nhất 3 dự án ưu tiên theo 2 tiêu chí: 1. Dự án lớn nhất(thời gian dài, thành viên, ngân sách), 2. Thời gian gần với hiện tại nhất. ' +
+      prompt;
+    const result = await this.googleAiService.generateGeminiPro(require);
+    return result;
+  }
+
+  async mappingExperience(
+    jobDescription: string | string[],
+    resumeField: string,
+    jobTitle: string,
+    prompt: string,
+  ): Promise<string> {
+    let require =
+      ' Từ đầu vào là jobDescription từ doanh nghiệp như sau: ' +
+      jobDescription +
+      '. JobDescription sau khi phân tích có nội dung jobTitle(vị trí công việc) như sau :' +
+      jobTitle + 
+      '. Và dữ liệu từ hồ sơ năng lực của người dùng: ' +
+      resumeField +
+      '. Hãy dựa theo đoạn mô tả yêu cầu của jobDescription và jobTitle từ doanh nghiệp, tìm dữ liệu có jobTitle và descriptions phù hợp với jobDescription, lấy dữ liệu từ trong hồ sơ năng lực và trả về kết quả. Lấy nhiều nhất 2 dữ liệu phù hợp ưu tiên theo 2 tiêu chí: 1. jobTitle có nội dung giống nhau. 2. Kinh nghiệm cao nhất ứng với jobTitle thích hợp và công việc thích hợp được nêu trong jobDescription(có thể số năm kinh nghiệm không đáp ứng vẫn được chấp nhận) . ' +
       prompt;
     const result = await this.googleAiService.generateGeminiPro(require);
     return result;
